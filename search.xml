@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>test</title>
+    <url>/2019/10/17/test/</url>
+    <content><![CDATA[<p>title: phpstudy后门漏洞复现<br>categories: 漏洞复现<br>tags:</p>
+<ul>
+<li>phpstudy</li>
+<li>漏洞复现<br>password: demos<br>abstract: ‘hexo 加密测试， 密码:demos.’<br>message: ‘您好, 这里需要密码.’<br>wrong_pass_message: ‘抱歉, 这个密码看着不太对, 请再试试.’<br>wrong_hash_message: ‘抱歉, 这个文章不能被校验, 不过您还是能看看解密后的内容.’<br>abbrlink: 48728<br>date: 2019-09-28 16:46:44</li>
+</ul>
+]]></content>
+  </entry>
+  <entry>
     <title>test passwd</title>
     <url>/2019/10/17/test-passwd/</url>
     <content><![CDATA[<div id="hexo-blog-encrypt" data-wpm="Oh, this is an invalid password. Check and try again, please." data-whm="OOPS, these decrypted content may changed, but you can still have a look.">

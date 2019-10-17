@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>test</title>
+    <url>/2019/10/17/test/</url>
+    <content><![CDATA[<h3 id="测试一"><a href="#测试一" class="headerlink" title="测试一"></a>测试一</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"></span><br><span class="line">print(sys.argv[<span class="number">0</span>])</span><br></pre></td></tr></table></figure>
+
+<h3 id="测试二"><a href="#测试二" class="headerlink" title="测试二"></a>测试二</h3><h3 id="测试三"><a href="#测试三" class="headerlink" title="测试三"></a>测试三</h3>]]></content>
+      <tags>
+        <tag>test</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>获取数据库信息</title>
     <url>/2019/10/17/%E8%8E%B7%E5%8F%96%E6%95%B0%E6%8D%AE%E5%BA%93%E4%BF%A1%E6%81%AF/</url>
     <content><![CDATA[<p><strong>mysql数据库常用函数:</strong></p>

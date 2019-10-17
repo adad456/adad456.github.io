@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://adad456.github.io/"/>
-  <updated>2019-10-17T08:52:19.995Z</updated>
+  <updated>2019-10-17T08:55:27.015Z</updated>
   <id>https://adad456.github.io/</id>
   
   <author>
@@ -15,6 +15,30 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>test</title>
+    <link href="https://adad456.github.io/2019/10/17/test/"/>
+    <id>https://adad456.github.io/2019/10/17/test/</id>
+    <published>2019-10-17T08:53:54.000Z</published>
+    <updated>2019-10-17T08:55:27.015Z</updated>
+    
+    <content type="html"><![CDATA[<h3 id="测试一"><a href="#测试一" class="headerlink" title="测试一"></a>测试一</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"></span><br><span class="line">print(sys.argv[<span class="number">0</span>])</span><br></pre></td></tr></table></figure><h3 id="测试二"><a href="#测试二" class="headerlink" title="测试二"></a>测试二</h3><h3 id="测试三"><a href="#测试三" class="headerlink" title="测试三"></a>测试三</h3>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h3 id=&quot;测试一&quot;&gt;&lt;a href=&quot;#测试一&quot; class=&quot;headerlink&quot; title=&quot;测试一&quot;&gt;&lt;/a&gt;测试一&lt;/h3&gt;&lt;figure class=&quot;highlight python&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;
+      
+    
+    </summary>
+    
+    
+    
+      <category term="test" scheme="https://adad456.github.io/tags/test/"/>
+    
+  </entry>
   
   <entry>
     <title>获取数据库信息</title>

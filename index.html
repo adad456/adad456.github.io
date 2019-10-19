@@ -175,9 +175,7 @@
     
         在登陆处用于判断账号、密码，在数据库中使用select语句；在修改密码处，更新密码会使用update语句；在购物系统中，订单的添加、删除会使用insert、delete语句
 数据库中创建一个test的表
-1create table TEST(id int(3),username varchar(25),password varchar(25),primary key(id))
-
-账号登陆通过...
+create table TEST(id int(3),username varchar(25),password varchar(25),primary key(id))账号登陆通过SQL...
     
 
         <a href="/2019/10/19/POST%E6%B3%A8%E5%85%A5/" class="post-more waves-effect waves-button">
@@ -226,7 +224,10 @@
     
         union select数字类型​    查询语句中的参数没有被引号包起来，如id=1（有些闭合参数不使用引号，而使用括号来闭合）    
 payload:        
-12345678910111213141516171819id=1&apos;                       页面返回错误id=1+1 或id=3-1             如果存在id=2这条数据，返回...
+id=1&#39;                       页面返回错误
+
+id=1+1 或id=3-1             如果存在id=2这条数据，返回结果为真，否者为假
+id=1+0            ...
     
 
         <a href="/2019/10/17/%E5%88%A4%E6%96%AD%E6%B3%A8%E5%85%A5%E7%82%B9/" class="post-more waves-effect waves-button">

@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://adad456.github.io/"/>
-  <updated>2019-10-19T01:22:19.620Z</updated>
+  <updated>2019-10-19T01:23:34.902Z</updated>
   <id>https://adad456.github.io/</id>
   
   <author>
@@ -21,15 +21,15 @@
     <link href="https://adad456.github.io/2019/10/19/test1/"/>
     <id>https://adad456.github.io/2019/10/19/test1/</id>
     <published>2019-10-19T00:40:31.000Z</published>
-    <updated>2019-10-19T01:22:19.620Z</updated>
+    <updated>2019-10-19T01:23:34.902Z</updated>
     
-    <content type="html"><![CDATA[<p><img src="https://github.com/adad456/Images/blob/master/1.png" alt></p>]]></content>
+    <content type="html"><![CDATA[<p><img src="https://raw.githubusercontent.com/adad456/Images/master/1.png" alt></p>]]></content>
     
     <summary type="html">
     
       
       
-        &lt;p&gt;&lt;img src=&quot;https://github.com/adad456/Images/blob/master/1.png&quot; alt&gt;&lt;/p&gt;
+        &lt;p&gt;&lt;img src=&quot;https://raw.githubusercontent.com/adad456/Images/master/1.png&quot; alt&gt;&lt;/p&gt;
 
       
     

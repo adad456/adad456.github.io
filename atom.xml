@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://adad456.github.io/"/>
-  <updated>2019-10-19T03:29:22.296Z</updated>
+  <updated>2019-10-19T08:42:33.940Z</updated>
   <id>https://adad456.github.io/</id>
   
   <author>
@@ -15,6 +15,41 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>HTTP头部注入</title>
+    <link href="https://adad456.github.io/2019/10/19/HTTP%E5%A4%B4%E9%83%A8%E6%B3%A8%E5%85%A5/"/>
+    <id>https://adad456.github.io/2019/10/19/HTTP头部注入/</id>
+    <published>2019-10-19T08:40:33.000Z</published>
+    <updated>2019-10-19T08:42:33.940Z</updated>
+    
+    <content type="html"><![CDATA[<p>HTTP基础：</p><pre><code>Accept:浏览器能够处理的内容类型Accept-Charset:浏览器能够显示的字符集Accept-Encoding:浏览器能够处理的压缩编码Accept-Language:浏览器当前设置的语言Connection:浏览器与服务器之间的连接类型cookie：当前页面设置的任何cookieHost： 发出请求的页面所在的域Referer:发出请求的页面的URLUser-Agent:浏览器的用户代理字符串Server:WEB服务器表明自己是什么软件及版本信息。例如：server Apache/2.0.61(Unix)</code></pre><p>​        <strong>HTTP头注入是指从HTTP头中获取数据，而未对获取到的数据进行过滤，从而产生的注入。 HTTP头注入常发生在程序采集用户信息的模块中。例如：</strong></p><pre><code>1、X-Forwarded-For/client-IP2、User-Agent3、Referer4、Cookie</code></pre><p>​        <strong>cookie注入：COOKIE型注入是通过COOKIE进行数据提交的，其常见的情况有验证登陆、$_REQUEST获取参数。验证登陆是将用户的登陆信息放入COOKIE中来做权限验证的一种方法。</strong></p><h2 id="User-Agent头注入"><a href="#User-Agent头注入" class="headerlink" title="User-Agent头注入"></a>User-Agent头注入</h2><p>​    <strong>与注册登录再注入类似，在登陆后insert语句带入查询，产生注入。构造的payload可以基于多种注入，下面以updatexml()报错为例</strong></p><p><em>sqlilabs靶场第18关</em></p><pre><code>&#39; and updatexnl(1,concat(0x23,database(),0x23),1) and &#39;</code></pre><p><img src="https://demos-qq.oss-cn-beijing.aliyuncs.com/Blog/1571472840.05.png" alt=""></p><h2 id="Referer头注入"><a href="#Referer头注入" class="headerlink" title="Referer头注入"></a>Referer头注入</h2><p><strong>与UA头注入类似</strong></p><p><em>sqlilabs靶场第19关</em></p><pre><code>&#39; and updatexml(1,concat(0x23,database(),0x23),1) or &#39;#</code></pre><p><img src="C:%5CUsers%5C123%5CAppData%5CRoaming%5CTypora%5Ctypora-user-images%5C1571473914846.png" alt="1571473914846"></p><h2 id="Cookie注入"><a href="#Cookie注入" class="headerlink" title="Cookie注入"></a>Cookie注入</h2><p><em>sqlilabs靶场第20关</em></p><pre><code>&#39; and updatexml(1,concat(0x23,database(),0x23),1)#</code></pre><p><img src="https://demos-qq.oss-cn-beijing.aliyuncs.com/Blog/1571474297.68.png" alt=""></p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;HTTP基础：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;Accept:浏览器能够处理的内容类型
+Accept-Charset:浏览器能够显示的字符集
+Accept-Encoding:浏览器能够处理的压缩编码
+Accept-Language:浏览器当前设置的语言
+Connection:
+      
+    
+    </summary>
+    
+    
+      <category term="web安全 - SQL注入" scheme="https://adad456.github.io/categories/web%E5%AE%89%E5%85%A8-SQL%E6%B3%A8%E5%85%A5/"/>
+    
+    
+      <category term="SQL注入" scheme="https://adad456.github.io/tags/SQL%E6%B3%A8%E5%85%A5/"/>
+    
+      <category term="数据库" scheme="https://adad456.github.io/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
+    
+      <category term="HTTP" scheme="https://adad456.github.io/tags/HTTP/"/>
+    
+  </entry>
   
   <entry>
     <title>POST注入</title>

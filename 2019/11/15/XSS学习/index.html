@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    
+    <title>XSS学习 | 拾柒 | 天行健，君子以自强不息！</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="XSS攻击">
+    <meta name="description" content="XSS： 跨站脚本（英语：Cross-site scripting，通常简称为：XSS）是一种网站应用程序的安全漏洞攻击，是代码注入的一种。这些恶意网页程序通常是JavaScript，但实际上也可以包括Java，VBScript，ActiveX，Flash或者甚至是普通的HTML。反射型XSS参数型XSS，常见的就是在URL中构造，攻击的切入点是URL后面的参数，将恶意链接发送给目标用户。当用户访">
+<meta name="keywords" content="XSS攻击">
+<meta property="og:type" content="article">
+<meta property="og:title" content="XSS学习">
+<meta property="og:url" content="https:&#x2F;&#x2F;adad456.github.io&#x2F;2019&#x2F;11&#x2F;15&#x2F;XSS%E5%AD%A6%E4%B9%A0&#x2F;index.html">
+<meta property="og:site_name" content="拾柒">
+<meta property="og:description" content="XSS： 跨站脚本（英语：Cross-site scripting，通常简称为：XSS）是一种网站应用程序的安全漏洞攻击，是代码注入的一种。这些恶意网页程序通常是JavaScript，但实际上也可以包括Java，VBScript，ActiveX，Flash或者甚至是普通的HTML。反射型XSS参数型XSS，常见的就是在URL中构造，攻击的切入点是URL后面的参数，将恶意链接发送给目标用户。当用户访">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;demos-qq.oss-cn-beijing.aliyuncs.com&#x2F;Blog&#x2F;1573798306.52.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;demos-qq.oss-cn-beijing.aliyuncs.com&#x2F;Blog&#x2F;1573802823.66.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;demos-qq.oss-cn-beijing.aliyuncs.com&#x2F;Blog&#x2F;1573798479.05.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;demos-qq.oss-cn-beijing.aliyuncs.com&#x2F;Blog&#x2F;1573800625.27.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;demos-qq.oss-cn-beijing.aliyuncs.com&#x2F;Blog&#x2F;1573803120.7.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;demos-qq.oss-cn-beijing.aliyuncs.com&#x2F;Blog&#x2F;1573803439.67.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;demos-qq.oss-cn-beijing.aliyuncs.com&#x2F;Blog&#x2F;1573801009.32.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;demos-qq.oss-cn-beijing.aliyuncs.com&#x2F;Blog&#x2F;1573801402.43.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;demos-qq.oss-cn-beijing.aliyuncs.com&#x2F;Blog&#x2F;1573802431.21.png">
+<meta property="og:updated_time" content="2019-11-15T08:11:59.301Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;demos-qq.oss-cn-beijing.aliyuncs.com&#x2F;Blog&#x2F;1573798306.52.png">
+    
+        <link rel="alternate" type="application/atom+xml" title="拾柒" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" href="/css/style.css?v=1.7.2">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+	
+	<link rel="stylesheet" href="/css/highlight/vs2015.css">
+	
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">拾柒</h5>
+          <a href="mailto:lt7178508@gmail.com" target="_blank" rel="noopener" title="lt7178508@gmail.com" class="mail">lt7178508@gmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives"  >
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags"  >
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/adad456" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">XSS学习</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">XSS学习</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2019-11-15T08:09:34.000Z" itemprop="datePublished" class="page-time">
+  2019-11-15
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/web%E5%AE%89%E5%85%A8-XSS/">web安全 - XSS</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#反射型XSS"><span class="post-toc-number">1.</span> <span class="post-toc-text">反射型XSS</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#存储型XSS"><span class="post-toc-number">2.</span> <span class="post-toc-text">存储型XSS</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#DOM-XSS"><span class="post-toc-number">3.</span> <span class="post-toc-text">DOM-XSS</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#区别"><span class="post-toc-number">4.</span> <span class="post-toc-text">区别</span></a></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-XSS学习"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">XSS学习</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2019-11-15 16:09:34" datetime="2019-11-15T08:09:34.000Z"  itemprop="datePublished">2019-11-15</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/web%E5%AE%89%E5%85%A8-XSS/">web安全 - XSS</a></li></ul>
+
+
+
+            
+<span id="busuanzi_container_page_pv" title="文章总阅读量" style='display:none'>
+    <i class="icon icon-eye icon-pr"></i><span id="busuanzi_value_page_pv"></span>
+</span>
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <p><strong>XSS：</strong></p>
+<pre><code>跨站脚本（英语：Cross-site scripting，通常简称为：XSS）是一种网站应用程序的安全漏洞攻击，是代码注入的一种。这些恶意网页程序通常是JavaScript，但实际上也可以包括Java，VBScript，ActiveX，Flash或者甚至是普通的HTML。</code></pre><h2 id="反射型XSS"><a href="#反射型XSS" class="headerlink" title="反射型XSS"></a>反射型XSS</h2><p>参数型XSS，常见的就是在URL中构造，攻击的切入点是URL后面的参数，将恶意链接发送给目标用户。当用户访问该链接时候，会向服务器发起一个GET请求来提交带有恶意代码的链接，造成反弹型XSS。主要是GET类型 。</p>
+<p><img src="https://demos-qq.oss-cn-beijing.aliyuncs.com/Blog/1573798306.52.png" alt=""></p>
+<pre><code>通过burpsuite抓包，查看到返回包里面存在xss!!!</code></pre><p><img src="https://demos-qq.oss-cn-beijing.aliyuncs.com/Blog/1573802823.66.png" alt=""></p>
+<pre><code>再次打开正常页面没有xss弹框</code></pre><p><img src="https://demos-qq.oss-cn-beijing.aliyuncs.com/Blog/1573798479.05.png" alt=""></p>
+<h2 id="存储型XSS"><a href="#存储型XSS" class="headerlink" title="存储型XSS"></a>存储型XSS</h2><p> 常见的就是在博客留言板、反馈投诉、论坛评论、将恶意代码和正文都存入服务器的数据库。每次访问都会触发恶意代码。 </p>
+<p>在留言处提交XSS语句，成功弹框。</p>
+<p><img src="https://demos-qq.oss-cn-beijing.aliyuncs.com/Blog/1573800625.27.png" alt=""></p>
+<pre><code>通过burpsuite抓包,在返回包里发现xss!!!</code></pre><p><img src="https://demos-qq.oss-cn-beijing.aliyuncs.com/Blog/1573803120.7.png" alt=""></p>
+<pre><code>回到正常页面刷新页面，发现还是有弹框</code></pre><p><img src="https://demos-qq.oss-cn-beijing.aliyuncs.com/Blog/1573803439.67.png" alt=""></p>
+<h2 id="DOM-XSS"><a href="#DOM-XSS" class="headerlink" title="DOM-XSS"></a>DOM-XSS</h2><p> DOM—based XSS漏洞是基于文档对象模型Document Object Model,DOM)的一种漏洞。DOM就是一个树状的模型，你可以编写Javascript代码根据dom一层一层的节点，去遍历/获取/修改对应的节点、对象、值。</p>
+<pre><code>DOM-XSS特点：
+    DOM-XSS意味着一个xss漏洞出现在DOM中而不是网页的一部分。在反射型和存储型xss中，可以在服务器的返回网页中看到xss payload,但是在DOM-XSS中，HTML源码和攻击后返回的网页完全相同，只有在动态运行或调查网页的DOM树时才能看到xss payload。
+    DOM-XSS取决于输出位置，并不取决于输出环境，因此DOM-XSS既有可能是反射型，也有可能是存储型。</code></pre><p>  <img src="https://demos-qq.oss-cn-beijing.aliyuncs.com/Blog/1573801009.32.png" alt=""></p>
+<pre><code>在dvwa靶场的DOM-xss上构造xss语句，成功弹框。</code></pre><p><img src="https://demos-qq.oss-cn-beijing.aliyuncs.com/Blog/1573801402.43.png" alt=""></p>
+<pre><code>通过burpsuite抓包，在返回包里面没有发现xss!!!</code></pre><p><img src="https://demos-qq.oss-cn-beijing.aliyuncs.com/Blog/1573802431.21.png" alt=""></p>
+<h2 id="区别"><a href="#区别" class="headerlink" title="区别"></a>区别</h2><pre><code>1、DOM-XSS是由于浏览器解析机制导致的漏洞，服务器不参与，而存储型与反射型都需要服务器响应参与。
+2、最直观的区别（burpsuite抓包）：
+    存储型XSS：你发送一次带XSS代码的请求，以后这个页面的返回包里都会有XSS代码；
+    反射型XSS：你发送一次带XSS代码的请求，只能在当前返回的数据包中发现XSS代码；
+    DOM-XSS：你发送一次带XSS代码的请求，在返回包里找不到XSS代码；</code></pre>
+        </div>
+
+        <blockquote class="post-copyright">
+    
+    <div class="content">
+        
+<span class="post-time">
+    最后更新时间：<time datetime="2019-11-15T08:11:59.301Z" itemprop="dateUpdated">2019-11-15 16:11:59</time>
+</span><br>
+
+
+        
+    </div>
+    
+    <footer>
+        <a href="https://adad456.github.io">
+            <img src="/img/avatar.jpg" alt="拾柒">
+            拾柒
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/XSS%E6%94%BB%E5%87%BB/" rel="tag">XSS攻击</a></li></ul>
+
+
+            
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between flex-row-reverse">
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2019/10/20/%E5%9F%BA%E4%BA%8E%E6%8A%A5%E9%94%99%E6%B3%A8%E5%85%A5/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">基于报错注入</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+<p>
+    <span id="busuanzi_container_site_uv" style='display:none'>
+        站点总访客数：<span id="busuanzi_value_site_uv"></span>
+    </span>
+    <span id="busuanzi_container_site_pv" style='display:none'>
+        站点总访问量：<span id="busuanzi_value_site_pv"></span>
+    </span>
+</p>
+
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>博客内容遵循 <a rel="license noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank">知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>拾柒 &copy; 2019</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+<script src="/js/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: false, REWARD: false };
+
+
+</script>
+
+<script src="/js/main.min.js?v=1.7.2"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="/js/search.min.js?v=1.7.2" async></script>
+
+
+
+
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = 'Adad456's Blog';
+            clearTimeout(titleTime);
+        } else {
+            document.title = 'Adad456's Blog';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+<!-- highlight.js代码高亮主题 script 引入-->
+<script src="/plugins/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<!-- highlight.js代码高亮主题 script 引入-->
+</body>
+</html>
